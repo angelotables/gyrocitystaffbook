@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+<link rel="manifest" href="manifest.json" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Staff Book" />
+<meta name="theme-color" content="#1E3A5C" />
 <title>Gyro City — Staff Book</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%2317395C'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'>G</text></svg>" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -279,6 +285,8 @@ function App(){
   const [loginName,setLoginName]=useState(null);
   const [pinBuf,setPinBuf]=useState('');
   const [pinBad,setPinBad]=useState(false);
+  const [pinMode,setPinMode]=useState('enter'); // enter | create | confirm
+  const [firstPin,setFirstPin]=useState('');
   const [meta,setMeta]=useState(null);
   const [allNames,setAllNames]=useState([]);
   // ideas / comments
@@ -379,24 +387,27 @@ function App(){
   async function submitPin(pin){
     const empId=idForName(loginName);
     if(!empId){setLoginErr('Could not find your name on the roster — ask a manager.');setPinBuf('');return;}
+    // First-time setup: pick a PIN, then confirm it, then register.
+    if(pinMode==='create'){ setFirstPin(pin);setPinMode('confirm');setPinBuf('');setPinBad(false);setLoginErr('');return; }
+    if(pinMode==='confirm'){
+      if(pin!==firstPin){ setPinMode('create');setFirstPin('');setPinBuf('');setPinBad(true);setLoginErr("Those didn't match — pick your PIN again."); return; }
+      setAuthBusy(true);setPinBad(false);setLoginErr('');
+      try{
+        const r=await fetch(FN_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'register',empId,pin})});
+        if(r.ok){ await signInWithEmailAndPassword(_auth,STAFF_EMAIL(empId),STAFF_PW(pin)); localStorage.setItem('gc-lastname',loginName); }
+        else if(r.status===409){ setPinMode('enter');setFirstPin('');setPinBuf('');setLoginErr('You already have a PIN — enter it below.'); }
+        else { const j=await r.json().catch(()=>({})); setLoginErr(j.error||'Could not set your PIN.');setPinBuf('');setPinMode('create');setFirstPin(''); }
+      }catch(e2){ setLoginErr('Network problem — check your internet.');setPinBuf('');setPinMode('create');setFirstPin(''); }
+      setAuthBusy(false);
+      return;
+    }
+    // Returning staff: enter PIN once and sign in.
     setAuthBusy(true);setPinBad(false);setLoginErr('');
     try{
       await signInWithEmailAndPassword(_auth,STAFF_EMAIL(empId),STAFF_PW(pin));
       localStorage.setItem('gc-lastname',loginName); // onAuthStateChanged sets authed
     }catch(e){
-      // Not signed in — either a first-timer (no account) or a wrong PIN. Ask the function.
-      try{
-        const r=await fetch(FN_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'register',empId,pin})});
-        if(r.ok){
-          await signInWithEmailAndPassword(_auth,STAFF_EMAIL(empId),STAFF_PW(pin));
-          localStorage.setItem('gc-lastname',loginName);
-        }else if(r.status===409){
-          setPinBad(true);setPinBuf(''); // account exists -> the PIN was just wrong
-        }else{
-          const j=await r.json().catch(()=>({}));
-          setLoginErr(j.error||'Could not sign in.');setPinBuf('');
-        }
-      }catch(e2){ setLoginErr('Network problem — check your internet.');setPinBuf(''); }
+      setPinBad(true);setPinBuf(''); // wrong PIN — or not set up yet (tap "first time")
     }
     setAuthBusy(false);
   }
@@ -407,7 +418,7 @@ function App(){
     }
   },[authReady,allNames]);
   function pickLogin(name){
-    setLoginName(name);setPinBuf('');setPinBad(false);setLoginErr('');
+    setLoginName(name);setPinBuf('');setPinBad(false);setLoginErr('');setPinMode('enter');setFirstPin('');
   }
   function logOut(){signOut(_auth);setLoginName(null);setPinBuf('');setPinBad(false);}
   const today=new Date().toISOString().slice(0,10);
@@ -750,11 +761,16 @@ function App(){
           `:html`
             <div class="whoami">${loginName}</div>
             <div class="pinsub">
-              Enter your 4-digit PIN.<div style="font-size:12px;color:var(--faint);margin-top:2px">First time? The PIN you type becomes yours.</div>${loginErr?html`<div style="color:var(--tomato);font-weight:700;margin-top:4px">${loginErr}</div>`:''}${true?'':
+              ${pinMode==='create'?html`First time — pick a 4-digit PIN`:pinMode==='confirm'?html`Enter it again to confirm`:html`Enter your 4-digit PIN.<div style="font-size:12px;color:var(--faint);margin-top:2px">First time here? Tap "Set up a PIN" below.</div>`}${loginErr?html`<div style="color:var(--tomato);font-weight:700;margin-top:4px">${loginErr}</div>`:''}${true?'':
                 'Enter the manager PIN to reset someone\u2019s code'}
-              ${pinBad?html`<div style="color:var(--tomato);font-weight:700;margin-top:4px">Wrong PIN — try again</div>`:''}
+              ${(pinBad&&pinMode==='enter')?html`<div style="color:var(--tomato);font-weight:700;margin-top:4px">Wrong PIN — try again</div>`:''}
             </div>
             ${keypad}
+            <div style="text-align:center;margin-top:10px">
+              ${pinMode==='enter'
+                ?html`<button class="ghost" style="color:var(--blue);font-weight:600" onClick=${()=>{setPinMode('create');setPinBuf('');setPinBad(false);setLoginErr('');setFirstPin('');}}>Set up a PIN (first time)</button>`
+                :html`<button class="ghost" style="color:var(--blue);font-weight:600" onClick=${()=>{setPinMode('enter');setPinBuf('');setPinBad(false);setLoginErr('');setFirstPin('');}}>Have a PIN? Enter it</button>`}
+            </div>
             ${authBusy&&html`<div class="pinsub" style="margin-top:10px">Signing in…</div>`}
             ${html`
               <div style="text-align:center;margin-top:12px">
