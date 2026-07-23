@@ -17,26 +17,23 @@
 <style>
   :root {
     --navy:#0E2A47; --navy2:#17395C; --blue:#2E6FA3; --sky:#7FB2DC;
-    --olive:#6F7A45; --olive2:#8A9A55; --tomato:#C0442E; --amber:#C89B3C;
-    --ink:#1B2430; --faint:#75808F; --bg:#F4F1E9; --card:#FFFFFF; --line:#E4E0D4;
-    --r:18px; --shadow:0 2px 6px rgba(14,42,71,.06),0 12px 32px -12px rgba(14,42,71,.14);
-    --shadow-lg:0 4px 12px rgba(14,42,71,.08),0 24px 60px -18px rgba(14,42,71,.28);
-    --disp:'Space Grotesk',system-ui,sans-serif;
+    --olive:#5C6670; --olive2:#7A8590; --tomato:#B23A2A; --amber:#A66A00;
+    --green:#1E7F4F; --ink:#131A22; --faint:#6B7683; --bg:#F5F6F8; --card:#FFFFFF; --line:#E3E6EB; --edge:#E3E6EB; --dim:#8A8378;
+    --r:12px; --shadow:0 1px 2px rgba(19,26,34,.05),0 8px 24px -12px rgba(19,26,34,.10);
+    --shadow-lg:0 2px 8px rgba(19,26,34,.06),0 18px 44px -16px rgba(19,26,34,.18);
+    --disp:'Inter',system-ui,sans-serif;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html{scroll-behavior:smooth}
-  body{margin:0;color:var(--ink);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;font-size:15px;
-    background:var(--bg);
-    background-image:radial-gradient(900px 500px at 110% -5%,rgba(46,111,163,.10),transparent 60%),
-                     radial-gradient(700px 420px at -15% 20%,rgba(200,155,60,.10),transparent 55%);
-    background-attachment:fixed;}
+  body{margin:0;color:var(--ink);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14.5px;
+    background:var(--bg);font-variant-numeric:tabular-nums}
   .mono{font-family:ui-monospace,'SF Mono',Menlo,monospace}
   .wrap{max-width:680px;margin:0 auto;padding:16px 16px calc(90px + env(safe-area-inset-bottom))}
 
   /* ---------- header ---------- */
-  .hdr{background:linear-gradient(135deg,#0C2440 0%,#17395C 55%,#1F4A75 100%);color:#F4F6F3;
+  .hdr{background:var(--navy);color:#F4F6F8;
     padding:calc(18px + env(safe-area-inset-top)) 18px 0;position:relative;overflow:hidden;
-    border-radius:0 0 26px 26px;box-shadow:var(--shadow-lg)}
+    border-radius:0 0 14px 14px;box-shadow:var(--shadow-lg)}
   .hdr::before{content:'';position:absolute;width:340px;height:340px;border-radius:50%;
     background:radial-gradient(circle,rgba(127,178,220,.28),transparent 65%);top:-160px;right:-90px;pointer-events:none}
   .hdr::after{content:'';position:absolute;width:260px;height:260px;border-radius:50%;
