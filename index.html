@@ -203,7 +203,7 @@ import { h, render, Fragment } from 'https://esm.sh/preact@10.22.0';
 import { useState, useEffect, useRef } from 'https://esm.sh/preact@10.22.0/hooks';
 import htm from 'https://esm.sh/htm@3.1.1';
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getFirestore, doc, onSnapshot, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getFirestore, doc, collection, onSnapshot, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import { getStorage, ref as sref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
@@ -222,6 +222,9 @@ const fb = initializeApp(firebaseConfig);
 const db = getFirestore(fb);
 const storage = getStorage(fb);
 const D = (key) => doc(db, 'gyrocity', key);
+// Invoices: one document per invoice (subcollection). Uploading only needs create
+// access — staff never read the invoice list back (that stays Orders/Owner/Manager).
+const invItemDoc = (store, id) => doc(db, 'gyrocity', 'inv_' + store, 'items', id);
 const _auth = getAuth(fb);
 const FN_URL = 'https://staff-583218261960.us-east4.run.app';
 const STAFF_EMAIL = (empId) => empId + '@staff.gyrocity.app';
@@ -363,10 +366,9 @@ function App(){
   },[store]);
   useEffect(()=>{
     if(!authed)return;
-    setInvoices([]);setLowList([]);
-    const u1=onSnapshot(D('inv_'+store),(s)=>{setConnected(true);setInvoices(s.exists()?s.data().list:[]);},()=>setConnected(false));
-    const u2=onSnapshot(D('low_'+store),(s)=>{setLowList(s.exists()?s.data().list:[]);},()=>setConnected(false));
-    return ()=>{u1();u2();};
+    setLowList([]);
+    const u2=onSnapshot(D('low_'+store),(s)=>{setConnected(true);setLowList(s.exists()?s.data().list:[]);},()=>setConnected(false));
+    return ()=>u2();
   },[store,authed]);
   useEffect(()=>{
     if(!authed)return;
@@ -454,8 +456,9 @@ function App(){
       const path=sref(storage,`invoices/${store}/${id}.jpg`);
       await uploadBytes(path,blob,{contentType:'image/jpeg'});
       const url=await getDownloadURL(path);
-      const rec={id,vendorId:null,num:'',total:null,url,by:authed,at:nowStamp(),day:today,applied:false};
-      await write('inv_'+store,{list:[rec,...invoices]});
+      const rec={vendorId:null,num:'',total:null,url,by:authed,at:nowStamp(),day:today,applied:false};
+      await setDoc(invItemDoc(store,id),rec);
+      const k='gc-staff-inv-'+store+'-'+today;localStorage.setItem(k,String((Number(localStorage.getItem(k))||0)+1));
       flash('Invoice uploaded ✓');
     }catch(e){setErr('Upload failed. ('+(e.message||e)+')');}
     setUploading(false);
@@ -610,7 +613,7 @@ function App(){
     </div>`;
 
   // ---- tab: invoices ----
-  const myToday=invoices.filter(x=>x.day===today&&x.by===authed).length;
+  const myToday=Number(localStorage.getItem('gc-staff-inv-'+store+'-'+today))||0;
   const invTab=html`
     <${Fragment}>
       <div class="card" style="text-align:center;padding:22px 16px">
