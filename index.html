@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Gyro City — Staff Book</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%2317395C'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'>G</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy:#0E2A47; --navy2:#17395C; --blue:#2E6FA3; --sky:#7FB2DC;
+    --olive:#6F7A45; --olive2:#8A9A55; --tomato:#C0442E; --amber:#C89B3C;
+    --ink:#1B2430; --faint:#75808F; --bg:#F4F1E9; --card:#FFFFFF; --line:#E4E0D4;
+    --r:18px; --shadow:0 2px 6px rgba(14,42,71,.06),0 12px 32px -12px rgba(14,42,71,.14);
+    --shadow-lg:0 4px 12px rgba(14,42,71,.08),0 24px 60px -18px rgba(14,42,71,.28);
+    --disp:'Space Grotesk',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{margin:0;color:var(--ink);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;font-size:15px;
+    background:var(--bg);
+    background-image:radial-gradient(900px 500px at 110% -5%,rgba(46,111,163,.10),transparent 60%),
+                     radial-gradient(700px 420px at -15% 20%,rgba(200,155,60,.10),transparent 55%);
+    background-attachment:fixed;}
+  .mono{font-family:ui-monospace,'SF Mono',Menlo,monospace}
+  .wrap{max-width:680px;margin:0 auto;padding:16px 16px calc(90px + env(safe-area-inset-bottom))}
+
+  /* ---------- header ---------- */
+  .hdr{background:linear-gradient(135deg,#0C2440 0%,#17395C 55%,#1F4A75 100%);color:#F4F6F3;
+    padding:calc(18px + env(safe-area-inset-top)) 18px 0;position:relative;overflow:hidden;
+    border-radius:0 0 26px 26px;box-shadow:var(--shadow-lg)}
+  .hdr::before{content:'';position:absolute;width:340px;height:340px;border-radius:50%;
+    background:radial-gradient(circle,rgba(127,178,220,.28),transparent 65%);top:-160px;right:-90px;pointer-events:none}
+  .hdr::after{content:'';position:absolute;width:260px;height:260px;border-radius:50%;
+    background:radial-gradient(circle,rgba(200,155,60,.22),transparent 65%);bottom:-120px;left:-70px;pointer-events:none}
+  .hdr-in{max-width:680px;margin:0 auto;position:relative;z-index:1}
+  .hrow{display:flex;justify-content:space-between;align-items:center}
+  h1{margin:0;font-size:24px;font-weight:700;letter-spacing:.05em;font-family:var(--disp)}
+  .greet{font-size:13.5px;color:#B9CCDE;margin-top:2px;font-weight:500}
+  .tag{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.16em;color:#8FB0CC}
+  .hello{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.16);
+    color:#F4F6F3;border-radius:999px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer;
+    backdrop-filter:blur(8px);transition:transform .15s,background .2s}
+  .hello:active{transform:scale(.95);background:rgba(255,255,255,.18)}
+  .stores{display:flex;gap:5px;margin:16px 0 12px;background:rgba(0,0,0,.22);border-radius:14px;padding:5px}
+  .stores button{flex:1;border:none;border-radius:10px;padding:10px 0;font-size:14px;font-weight:700;cursor:pointer;
+    background:transparent;color:#A9BDD2;font-family:var(--disp);letter-spacing:.02em;transition:all .25s cubic-bezier(.5,1.5,.5,1)}
+  .stores button.on{background:#F4F6F3;color:var(--navy);box-shadow:0 3px 10px rgba(0,0,0,.28);transform:scale(1.02)}
+  .wknav{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .wknav .arrow{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);color:#F4F6F3;border-radius:12px;
+    width:42px;height:42px;font-size:18px;cursor:pointer;transition:transform .15s}
+  .wknav .arrow:active{transform:scale(.9)}
+  .wkmid{flex:1;text-align:center}
+  .wkmid b{font-size:16px;font-family:var(--disp)}
+  .wkmid .sub{font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.12em;color:#8FB0CC;margin-top:3px}
+  .wkmid .sub.pub{color:#8FD69B}
+  .tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:0 0 12px;-webkit-overflow-scrolling:touch}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{background:rgba(255,255,255,.07);color:#A9BDD2;border:1px solid rgba(255,255,255,.10);border-radius:999px;
+    padding:9px 16px;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;font-family:'Inter',sans-serif}
+  .tabs button.on{background:#F4F6F3;color:var(--navy);font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+  .meander{height:0}
+
+  /* ---------- cards & inputs ---------- */
+  .card{background:var(--card);border:1px solid rgba(228,224,212,.8);border-radius:var(--r);padding:16px;margin-bottom:14px;
+    box-shadow:var(--shadow);animation:rise .35s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .lbl{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.14em;color:var(--faint);margin-bottom:9px}
+  .chips{display:flex;gap:7px;flex-wrap:wrap}
+  .chip{border:1.5px solid var(--line);background:#FBFAF6;color:var(--ink);border-radius:999px;padding:9px 15px;font-size:14px;
+    cursor:pointer;font-family:inherit;font-weight:500;transition:all .18s}
+  .chip:active{transform:scale(.94)}
+  .chip.on{background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);border-color:transparent;color:#fff;font-weight:700;
+    box-shadow:0 4px 12px rgba(23,57,92,.35)}
+  input,textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 13px;font-size:16px;font-family:inherit;
+    color:var(--ink);background:#FBFAF6;outline:none;transition:border .2s,box-shadow .2s}
+  input:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,111,163,.12)}
+  .btn{border:none;border-radius:13px;padding:13px 18px;font-size:15px;font-weight:700;cursor:pointer;color:#fff;
+    background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 130%);font-family:var(--disp);letter-spacing:.01em;
+    box-shadow:0 6px 16px -4px rgba(23,57,92,.4);transition:transform .15s,box-shadow .2s,filter .2s}
+  .btn:active{transform:scale(.965);filter:brightness(1.08)}
+  .btn.blue{background:linear-gradient(135deg,var(--blue),#4a8cc0)}
+  .btn.olive{background:linear-gradient(135deg,#5E6C38,var(--olive2));box-shadow:0 6px 16px -4px rgba(111,122,69,.45)}
+  .btn.wide{width:100%;display:block}
+  .btn[disabled]{opacity:.55}
+  .ghost{background:none;border:none;color:var(--faint);font-size:14px;cursor:pointer;font-family:inherit}
+
+  /* ---------- schedule ---------- */
+  .days{display:flex;gap:7px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none}
+  .days::-webkit-scrollbar{display:none}
+  .day{min-width:66px;border:1px solid rgba(228,224,212,.8);border-radius:14px;padding:9px 0 8px;background:var(--card);
+    color:var(--ink);font-weight:700;font-size:14px;cursor:pointer;box-shadow:var(--shadow);font-family:var(--disp);transition:all .2s}
+  .day:active{transform:scale(.94)}
+  .day.on{background:linear-gradient(150deg,var(--navy),var(--blue));color:#fff;border-color:transparent;transform:translateY(-2px);
+    box-shadow:0 8px 20px -6px rgba(23,57,92,.5)}
+  .day .sub{font-family:ui-monospace,Menlo,monospace;font-size:9.5px;font-weight:400;color:var(--faint);margin-top:3px}
+  .day.on .sub{color:#B9CCDE}
+  .dayhdr{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.12em;color:var(--faint);margin:2px 2px 12px}
+  .pos{background:var(--card);border:1px solid rgba(228,224,212,.8);border-radius:var(--r);margin-bottom:14px;
+    box-shadow:var(--shadow);overflow:hidden;border-left:5px solid;animation:rise .35s ease both}
+  .pos-h{padding:9px 16px;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.16em;font-weight:700}
+  .pos-b{padding:8px 14px 13px}
+  .shift{display:flex;width:100%;justify-content:space-between;align-items:center;background:#FBFAF6;border:1.5px solid var(--line);
+    border-radius:12px;padding:12px 13px;margin-top:8px;text-align:left;font-size:15.5px;gap:8px}
+  .shift .t{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--faint);white-space:nowrap}
+  .avgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:14px}
+  .avday{border:1px solid rgba(228,224,212,.8);border-radius:14px;padding:13px 0 11px;background:var(--card);color:var(--ink);
+    font-weight:700;font-size:13.5px;cursor:pointer;box-shadow:var(--shadow);font-family:var(--disp);transition:all .22s cubic-bezier(.5,1.6,.5,1)}
+  .avday:active{transform:scale(.9)}
+  .avday.yes{background:linear-gradient(150deg,#5E6C38,var(--olive2));color:#fff;border-color:transparent;transform:translateY(-2px);
+    box-shadow:0 8px 18px -6px rgba(111,122,69,.55)}
+  .avday.no{background:linear-gradient(150deg,#E9D3CD,#F2E2DD);color:var(--tomato);border-color:transparent}
+  .avday .sub{font-family:ui-monospace,Menlo,monospace;font-size:8.5px;font-weight:400;margin-top:3px;opacity:.85}
+  .avday .mark{font-size:15px;margin-top:4px}
+
+  /* ---------- misc ---------- */
+  .banner{border-radius:13px;padding:11px 15px;font-size:14px;margin-bottom:14px;line-height:1.55}
+  .banner.err{background:#FBE9E4;color:var(--tomato);border:1px solid #F2CFC5}
+  .toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+    background:linear-gradient(135deg,#5E6C38,var(--olive2));color:#fff;border-radius:999px;padding:11px 24px;font-size:14px;
+    font-weight:700;box-shadow:0 10px 30px -6px rgba(0,0,0,.35);z-index:60;animation:pop .3s cubic-bezier(.5,1.6,.5,1)}
+  @keyframes pop{from{opacity:0;transform:translate(-50%,14px) scale(.9)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+  .muted{color:var(--faint);font-size:13.5px;line-height:1.55}
+  .center{text-align:center;color:var(--faint);font-size:14.5px;padding:18px 0;line-height:1.6}
+  .pick{display:flex;width:100%;align-items:center;gap:13px;background:var(--card);border:1.5px solid var(--line);border-radius:16px;
+    padding:11px 13px;margin-bottom:9px;cursor:pointer;text-align:left;font-family:inherit;font-size:inherit;
+    box-shadow:var(--shadow);transition:all .18s}
+  .pick:active{transform:scale(.975)}
+  .pick .ico{width:48px;height:48px;min-width:48px;border-radius:14px;background:linear-gradient(145deg,#F6F3EA,#EDE8DA);
+    display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:inset 0 1px 2px rgba(255,255,255,.8)}
+  .pick .nm{flex:1;font-size:15px;font-weight:600;line-height:1.3}
+  .pick .pr{font-size:12.5px;color:var(--faint);font-weight:400;margin-top:1px}
+  .pill{font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.12em;color:#fff;border-radius:6px;padding:4px 8px;white-space:nowrap}
+  .plus{color:var(--sky);font-size:24px;padding:0 8px;font-weight:300}
+  .row{display:flex;gap:8px}.row>*{flex:1}
+
+  /* ---------- punch-in ---------- */
+  .login{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+    background:linear-gradient(160deg,#0A1F38 0%,#17395C 55%,#235285 100%);
+    padding:calc(40px + env(safe-area-inset-top)) 18px 44px;position:relative;overflow:hidden}
+  .login::before{content:'';position:absolute;width:520px;height:520px;border-radius:50%;
+    background:radial-gradient(circle,rgba(127,178,220,.22),transparent 62%);top:-220px;right:-160px;animation:drift 14s ease-in-out infinite alternate}
+  .login::after{content:'';position:absolute;width:440px;height:440px;border-radius:50%;
+    background:radial-gradient(circle,rgba(200,155,60,.2),transparent 62%);bottom:-190px;left:-140px;animation:drift 17s ease-in-out infinite alternate-reverse}
+  @keyframes drift{from{transform:translate(0,0)}to{transform:translate(36px,26px)}}
+  .login h1{color:#F4F6F3;margin:12px 0 2px;font-family:var(--disp);letter-spacing:.06em}
+  .login .tag{margin-bottom:26px}
+  .lcard{background:rgba(255,255,255,.94);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.6);
+    border-radius:26px;padding:24px 20px;width:100%;max-width:420px;box-shadow:0 30px 80px -20px rgba(0,0,0,.5);
+    position:relative;z-index:1;animation:rise .4s ease both}
+  .namegrid{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .namegrid .chip{padding:12px 17px;font-size:15px}
+  .whoami{text-align:center;font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px;font-family:var(--disp)}
+  .pinsub{text-align:center;font-size:13.5px;color:var(--faint);margin-bottom:16px;line-height:1.55}
+  .dots{display:flex;gap:15px;justify-content:center;margin:6px 0 20px}
+  .dot{width:15px;height:15px;border-radius:50%;border:2px solid var(--line);background:transparent;transition:all .15s cubic-bezier(.5,1.6,.5,1)}
+  .dot.f{background:linear-gradient(135deg,var(--navy),var(--blue));border-color:transparent;transform:scale(1.18);
+    box-shadow:0 2px 8px rgba(23,57,92,.4)}
+  .dots.bad .dot{border-color:var(--tomato);background:#F7E5E1;animation:shake .32s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+  .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;max-width:282px;margin:0 auto}
+  .key{border:1px solid var(--line);border-radius:18px;background:#FBFAF6;color:var(--ink);font-size:23px;font-weight:600;
+    padding:16px 0;cursor:pointer;font-family:var(--disp);box-shadow:0 2px 5px rgba(14,42,71,.07);transition:all .12s}
+  .key:active{transform:scale(.9);background:#EFEBDF;box-shadow:none}
+  .key.ghostk{background:transparent;border-color:transparent;box-shadow:none;font-size:18px;color:var(--faint)}
+  .backl{background:none;border:none;color:#9FBBD4;font-size:13.5px;cursor:pointer;margin-top:18px;position:relative;z-index:1;font-family:inherit}
+
+  /* ---------- game ---------- */
+  .garea{position:relative;height:440px;border-radius:22px;overflow:hidden;touch-action:none;box-shadow:var(--shadow-lg);
+    background:linear-gradient(180deg,#0E2A47 0%,#2E5C8A 62%,#3d70a0 70%,#E8DFC8 70.2%,#DFD4B8 100%)}
+  .gitem{position:absolute;font-size:30px;transform:translate(-50%,-50%);pointer-events:none;user-select:none;
+    filter:drop-shadow(0 3px 4px rgba(0,0,0,.25))}
+  .gpaddle{position:absolute;bottom:6px;font-size:46px;transform:translateX(-50%);pointer-events:none;user-select:none;
+    filter:drop-shadow(0 3px 5px rgba(0,0,0,.35))}
+  .ghud{position:absolute;top:10px;left:0;right:0;display:flex;justify-content:space-between;padding:0 16px;
+    font-family:var(--disp);font-size:15px;color:#fff;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+  .gover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:rgba(10,31,56,.85);backdrop-filter:blur(6px);color:#fff;text-align:center;padding:20px}
+  .lb{width:100%;max-width:280px;margin-top:12px}
+  .lbrow{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.14);font-size:14px}
+  .mt8{margin-top:8px}.mt10{margin-top:10px}.mb8{margin-bottom:8px}.mb10{margin-bottom:10px}.mb12{margin-bottom:12px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script type="module">
+import { h, render, Fragment } from 'https://esm.sh/preact@10.22.0';
+import { useState, useEffect, useRef } from 'https://esm.sh/preact@10.22.0/hooks';
+import htm from 'https://esm.sh/htm@3.1.1';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getFirestore, doc, onSnapshot, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getStorage, ref as sref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+const html = htm.bind(h);
+
+// ===== YOUR DATABASE =====
+const firebaseConfig = {
+  apiKey: "AIzaSyDzcydUg5xKt4G_5ECYkcW09eP80cOPIoA",
+  authDomain: "gyro-city.firebaseapp.com",
+  projectId: "gyro-city",
+  storageBucket: "gyro-city.firebasestorage.app",
+  messagingSenderId: "583218261960",
+  appId: "1:583218261960:web:60b444a894fc2c0be69afd"
+};
+const fb = initializeApp(firebaseConfig);
+const db = getFirestore(fb);
+const storage = getStorage(fb);
+const D = (key) => doc(db, 'gyrocity', key);
+const _auth = getAuth(fb);
+const FN_URL = 'https://staff-583218261960.us-east4.run.app';
+const STAFF_EMAIL = (empId) => empId + '@staff.gyrocity.app';
+const STAFF_PW = (pin) => 'gc-' + pin + '-staff';
+
+// ===== constants =====
+const STORES = [ { id: 'astoria', label: 'Astoria' }, { id: 'macdougal', label: 'MacDougal' } ];
+const POSITIONS = [
+  { id: 'cashier', label: 'Cashier', tint: '#DCEBDC', edge: '#5E8C5E' },
+  { id: 'expo', label: 'Expo', tint: '#FBE9B7', edge: '#B98A1E' },
+  { id: 'cook', label: 'Line Cook', tint: '#DCD3EC', edge: '#6B579B' },
+  { id: 'prep', label: 'Prep', tint: '#FBD9A0', edge: '#C77518' },
+];
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const DAY_HOURS = ['11AM–10PM','11AM–10PM','11AM–10PM','11AM–10PM','11AM–12AM','12PM–12AM','12PM–9PM'];
+const SEED = [
+  ['Angelo','cashier',0,'hr'],['Kaiya','cashier',17,'hr'],['Irene','cashier',17,'hr'],['Despoina','cashier',17,'hr'],['Isabelle','cashier',17,'hr'],['Christina','cashier',17,'hr'],['Francesca','cashier',17,'hr'],['Chris G','cashier',17,'hr'],
+  ['Rafaela','expo',17,'hr'],['Daniel','expo',17,'hr'],['Michael','expo',17,'hr'],
+  ['George','cook',1300,'wk'],['Jimmy','cook',22,'hr'],['Sostis','cook',1200,'wk'],['Kosta','cook',1600,'wk'],['Theodoros','cook',22,'hr'],['Yianni','cook',22,'hr'],
+  ['Joshua','prep',19,'hr'],['Eduardo','prep',22,'hr'],['Maykol','prep',20,'hr'],
+].map((e,i)=>({ id:'e'+i, name:e[0], role:e[1], rate:e[2], rateType:e[3] }));
+const LOW_CATALOG=[
+  {n:'38oz Paper Salad Bowls',cat:'PAPER GOODS',vend:'EL USA'},
+  {n:'Lids PET 32-38oz',cat:'PAPER GOODS',vend:'EL USA'},
+  {n:'Souffle Cups 2oz',cat:'PAPER GOODS',vend:'EL USA'},
+  {n:'Lunch Napkins 1ply',cat:'PAPER GOODS',vend:'EL USA'},
+  {n:'Bio Containers Craft #8',cat:'PAPER GOODS',vend:'EL USA'},
+  {n:'Forks Heavy Duty Wrapped',cat:'PAPER GOODS',vend:'EL USA'},
+  {n:'Coke Mexican (glass 12oz)',cat:'DRINKS',vend:'VV / Beer Depot'},
+  {n:'Coke Glass 8oz',cat:'DRINKS',vend:'VV'},
+  {n:'Coke Diet Glass 8oz',cat:'DRINKS',vend:'VV / Beer Depot'},
+  {n:'Sprite Glass 8oz',cat:'DRINKS',vend:'VV'},
+  {n:'Poland Spring Water',cat:'DRINKS',vend:'VV / Beer Depot'},
+  {n:'Zagori Sparkling',cat:'DRINKS',vend:'EL USA'},
+  {n:'Zagori Sparkling Lemon',cat:'DRINKS',vend:'EL USA'},
+  {n:'Zagori Still 500ml',cat:'DRINKS',vend:'EL USA'},
+  {n:'EPSA Sour Cherry',cat:'DRINKS',vend:'Optima'},
+  {n:'EPSA Orangeade',cat:'DRINKS',vend:'Optima'},
+  {n:'EPSA Lemonade',cat:'DRINKS',vend:'Optima'},
+];
+const EMOJI=[['bowl','🥣'],['lid','📦'],['cup','🥤'],['napkin','🧻'],['container','📦'],['fork','🍴'],['coke','🥤'],['sprite','🥤'],['water','💧'],['spring','💧'],['zagori','🫧'],['epsa','🥤'],['soda','🥤']];
+const emojiFor=(name)=>{const n=name.toLowerCase();for(const [k,e] of EMOJI){if(n.includes(k))return e;}return '📦';};
+
+// ===== helpers =====
+const fmtTime=(m)=>{if(m===24*60)return '12AM';let h2=Math.floor(m/60),mi=m%60;const ap=h2>=12&&h2<24?'PM':'AM';h2=h2%12||12;return `${h2}${mi?':'+String(mi).padStart(2,'0'):''}${ap}`;};
+const mondayOf=(o=0)=>{const d=new Date();const day=(d.getDay()+6)%7;d.setDate(d.getDate()-day+o*7);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
+const weekLabel=(m)=>{const[y,mo,d]=m.split('-').map(Number);const a=new Date(y,mo-1,d),b=new Date(y,mo-1,d+6);const f=(x)=>x.toLocaleDateString(undefined,{month:'short',day:'numeric'});return `${f(a)} – ${f(b)}`;};
+const dayDate=(m,di)=>{const[y,mo,d]=m.split('-').map(Number);return new Date(y,mo-1,d+di).toLocaleDateString(undefined,{month:'numeric',day:'numeric'});};
+const shiftMonday=(m,dw)=>{const[y,mo,d]=m.split('-').map(Number);const n=new Date(y,mo-1,d+dw*7);return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;};
+const emptyWeek=()=>({shifts:[],published:false});
+const nowStamp=()=>{const d=new Date();return d.toLocaleDateString(undefined,{month:'short',day:'numeric'})+' '+d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});};
+
+function App(){
+  const [store,setStore]=useState(localStorage.getItem('gc-store')||'astoria');
+  const [tab,setTab]=useState('avail');
+  const [connected,setConnected]=useState(null);
+  const [err,setErr]=useState('');
+  const [toast,setToast]=useState('');
+  const toastT=useRef(null);
+  const flash=(m)=>{setToast(m);clearTimeout(toastT.current);toastT.current=setTimeout(()=>setToast(''),1600);};
+
+  // punch-in auth (real Firebase login — the 4-digit PIN is the password)
+  const [authed,setAuthed]=useState(null);         // logged-in name
+  const [authReady,setAuthReady]=useState(false);
+  const [authBusy,setAuthBusy]=useState(false);
+  const [loginErr,setLoginErr]=useState('');
+  const [loginName,setLoginName]=useState(null);
+  const [pinBuf,setPinBuf]=useState('');
+  const [pinBad,setPinBad]=useState(false);
+  const [meta,setMeta]=useState(null);
+  const [allNames,setAllNames]=useState([]);
+  // ideas / comments
+  const [comments,setComments]=useState(null);
+  const [ideaTxt,setIdeaTxt]=useState('');
+  const [ideaAnon,setIdeaAnon]=useState(false);
+  const [ideaSending,setIdeaSending]=useState(false);
+  // game
+  const [scores,setScores]=useState(null);
+  const [g,setG]=useState({on:false,over:false,score:0,lives:3,items:[],px:0.5});
+  const gRef=useRef(null);
+  const loopRef=useRef(null);
+  // invoices
+  const [invoices,setInvoices]=useState([]);
+  const [uploading,setUploading]=useState(false);
+  // running low
+  const [lowList,setLowList]=useState([]);
+  const [lowCustom,setLowCustom]=useState('');
+  // schedule
+  const [monday,setMonday]=useState(mondayOf(0));
+  const [day,setDay]=useState(0); // week always opens on Monday
+  const [emp,setEmp]=useState(null);
+  const [week,setWeek]=useState(emptyWeek());
+  const [avail,setAvail]=useState({});
+  const [noteDay,setNoteDay]=useState(null);
+  const [noteDraft,setNoteDraft]=useState('');
+
+  useEffect(()=>{
+    // roster names for the login picker — public, loads before sign-in
+    const rosterDocs={};
+    const FOH=(e)=>e&&(e.role==='cashier'||e.role==='expo');
+    const rebuild=()=>{
+      const names=new Set(SEED.filter(FOH).map(e=>e.name));
+      for(const lst of Object.values(rosterDocs))for(const e of lst)if(FOH(e)&&e.name)names.add(e.name);
+      setAllNames([...names].sort());
+    };
+    rebuild();
+    const r1=onSnapshot(D('emp_astoria'),(s)=>{if(s.exists()){rosterDocs.a=s.data().list||[];rebuild();}},()=>{});
+    const r2=onSnapshot(D('emp_macdougal'),(s)=>{if(s.exists()){rosterDocs.m=s.data().list||[];rebuild();}},()=>{});
+    return ()=>{r1();r2();};
+  },[]);
+  // protected reads — only after the staff member is signed in
+  useEffect(()=>{
+    if(!authed)return;
+    const um=onSnapshot(D('meta'),(s)=>{setMeta(s.exists()?s.data():{});},()=>setConnected(false));
+    const gs=onSnapshot(D('gamescores'),(s)=>{setScores(s.exists()?(s.data().best||{}):{});},()=>{});
+    const cm=onSnapshot(D('staffcomments'),(s)=>{setComments(s.exists()?(s.data().list||[]):[]);},()=>{});
+    return ()=>{um();gs();cm();};
+  },[authed]);
+  // real login: map the signed-in account (uid = employee id) back to a name
+  useEffect(()=>{
+    const unsub=onAuthStateChanged(_auth,(u)=>{
+      if(u&&!u.isAnonymous){
+        const e=(emp||SEED).find(x=>x.id===u.uid);
+        setAuthed(e?e.name:u.uid);
+      }else{
+        setAuthed(null);
+      }
+      setAuthReady(true);
+    });
+    return unsub;
+  },[emp]);
+  useEffect(()=>{
+    localStorage.setItem('gc-store',store);
+    setEmp(null);
+    const u3=onSnapshot(D('emp_'+store),(s)=>{setEmp(s.exists()?s.data().list:SEED);},()=>{});
+    return ()=>u3();
+  },[store]);
+  useEffect(()=>{
+    if(!authed)return;
+    setInvoices([]);setLowList([]);
+    const u1=onSnapshot(D('inv_'+store),(s)=>{setConnected(true);setInvoices(s.exists()?s.data().list:[]);},()=>setConnected(false));
+    const u2=onSnapshot(D('low_'+store),(s)=>{setLowList(s.exists()?s.data().list:[]);},()=>setConnected(false));
+    return ()=>{u1();u2();};
+  },[store,authed]);
+  useEffect(()=>{
+    if(!authed)return;
+    const u4=onSnapshot(D(`week_${store}_${monday}`),(s)=>{setWeek(s.exists()?s.data():emptyWeek());},()=>setConnected(false));
+    const u5=onSnapshot(D(`avail_${store}_${monday}`),(s)=>{setAvail(s.exists()?(s.data().byEmp||{}):{});},()=>setConnected(false));
+    return ()=>{u4();u5();};
+  },[store,monday,authed]);
+
+  async function write(key,data){
+    try{await setDoc(D(key),data);setErr('');flash('Saved ✓');}
+    catch(e){setErr('Save failed — check internet. ('+(e.message||e)+')');}
+  }
+  function requireName(){return true;}
+  const idForName=(name)=>((emp||SEED).find(e=>e.name===name)||{}).id;
+  function pressKey(k){
+    if(authBusy)return;
+    if(pinBad)setPinBad(false);
+    if(k==='back'){setPinBuf(pinBuf.slice(0,-1));return;}
+    if(pinBuf.length>=4)return;
+    const nb=pinBuf+k;
+    setPinBuf(nb);
+    if(nb.length===4)setTimeout(()=>submitPin(nb),120);
+  }
+  async function submitPin(pin){
+    const empId=idForName(loginName);
+    if(!empId){setLoginErr('Could not find your name on the roster — ask a manager.');setPinBuf('');return;}
+    setAuthBusy(true);setPinBad(false);setLoginErr('');
+    try{
+      await signInWithEmailAndPassword(_auth,STAFF_EMAIL(empId),STAFF_PW(pin));
+      localStorage.setItem('gc-lastname',loginName); // onAuthStateChanged sets authed
+    }catch(e){
+      // Not signed in — either a first-timer (no account) or a wrong PIN. Ask the function.
+      try{
+        const r=await fetch(FN_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'register',empId,pin})});
+        if(r.ok){
+          await signInWithEmailAndPassword(_auth,STAFF_EMAIL(empId),STAFF_PW(pin));
+          localStorage.setItem('gc-lastname',loginName);
+        }else if(r.status===409){
+          setPinBad(true);setPinBuf(''); // account exists -> the PIN was just wrong
+        }else{
+          const j=await r.json().catch(()=>({}));
+          setLoginErr(j.error||'Could not sign in.');setPinBuf('');
+        }
+      }catch(e2){ setLoginErr('Network problem — check your internet.');setPinBuf(''); }
+    }
+    setAuthBusy(false);
+  }
+  useEffect(()=>{
+    const last=localStorage.getItem('gc-lastname');
+    if(authReady&&!authed&&!loginName&&last&&allNames.includes(last)){
+      setLoginName(last);setPinBuf('');setPinBad(false);
+    }
+  },[authReady,allNames]);
+  function pickLogin(name){
+    setLoginName(name);setPinBuf('');setPinBad(false);setLoginErr('');
+  }
+  function logOut(){signOut(_auth);setLoginName(null);setPinBuf('');setPinBad(false);}
+  const today=new Date().toISOString().slice(0,10);
+
+  // ---- invoice upload ----
+  function compressImage(file){
+    return new Promise((res,rej)=>{
+      const img=new Image();
+      img.onload=()=>{
+        const max=2400;
+        let w=img.width,h=img.height;
+        if(w>max||h>max){const k=max/Math.max(w,h);w=Math.round(w*k);h=Math.round(h*k);}
+        const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+        cv.getContext('2d').drawImage(img,0,0,w,h);
+        cv.toBlob(b=>b?res(b):rej(new Error('compress failed')),'image/jpeg',0.85);
+      };
+      img.onerror=()=>rej(new Error('could not read image'));
+      img.src=URL.createObjectURL(file);
+    });
+  }
+  async function uploadInvoice(file){
+    if(!requireName())return;
+    setUploading(true);setErr('');
+    try{
+      const blob=await compressImage(file);
+      const id=Date.now().toString(36);
+      const path=sref(storage,`invoices/${store}/${id}.jpg`);
+      await uploadBytes(path,blob,{contentType:'image/jpeg'});
+      const url=await getDownloadURL(path);
+      const rec={id,vendorId:null,num:'',total:null,url,by:authed,at:nowStamp(),day:today,applied:false};
+      await write('inv_'+store,{list:[rec,...invoices]});
+      flash('Invoice uploaded ✓');
+    }catch(e){setErr('Upload failed. ('+(e.message||e)+')');}
+    setUploading(false);
+  }
+
+  // ---- running low ----
+  const saveLow=(list)=>{setLowList(list);return write('low_'+store,{list});};
+  function toggleLow(name,vend){
+    if(!requireName())return;
+    const ex=lowList.find(x=>x.name===name);
+    if(ex)saveLow(lowList.filter(x=>x.name!==name));
+    else saveLow([{id:Date.now().toString(36),name,vend:vend||'',by:authed,at:nowStamp()},...lowList]);
+  }
+  function addCustomLow(){
+    if(!requireName())return;
+    const n=lowCustom.trim();
+    if(!n)return;
+    if(!lowList.find(x=>x.name.toLowerCase()===n.toLowerCase()))
+      saveLow([{id:Date.now().toString(36),name:n,vend:'',by:authed,at:nowStamp()},...lowList]);
+    setLowCustom('');
+  }
+  const clearLow=(id)=>saveLow(lowList.filter(x=>x.id!==id));
+
+  // ---- schedule ----
+  const saveAvail=(byEmp)=>write(`avail_${store}_${monday}`,{byEmp});
+  const employees=emp||SEED;
+  const empById=(id)=>employees.find(e=>e.id===id)||{name:'?'};
+  const dayShifts=(week.shifts||[]).filter(s=>s.day===day);
+  const availFor=(empId,di)=>{const a=avail[empId];if(!a||!a.days||a.days[di]===null||a.days[di]===undefined)return 'none';return a.days[di]?'yes':'no';};
+  const meEmp=employees.find(e=>e.name===authed&&(e.role==='cashier'||e.role==='expo'));
+  function toggleAvailDay(di){
+    if(!meEmp)return;
+    const cur=avail[meEmp.id]||{days:[null,null,null,null,null,null,null],notes:{}};
+    const days=[...(cur.days||[])];while(days.length<7)days.push(null);
+    days[di]=days[di]===true?false:days[di]===false?null:true;
+    saveAvail({...avail,[meEmp.id]:{...cur,days}});
+  }
+  function openNoteDay(di){
+    setNoteDay(di===noteDay?null:di);
+    setNoteDraft(avail[meEmp.id]?.notes?.[di]||'');
+  }
+  function saveDayNote(){
+    if(!meEmp||noteDay===null)return;
+    const cur=avail[meEmp.id]||{days:[null,null,null,null,null,null,null],notes:{}};
+    const notes={...(cur.notes||{})};
+    if(noteDraft.trim())notes[noteDay]=noteDraft.trim();else delete notes[noteDay];
+    saveAvail({...avail,[meEmp.id]:{...cur,notes}});
+  }
+
+  // ---- ideas / comments ----
+  async function submitIdea(){
+    if(comments===null){setErr('Still connecting — try again in a second.');return;}
+    const t=ideaTxt.trim();
+    if(!t){setErr('Write something first.');return;}
+    setIdeaSending(true);setErr('');
+    const rec={id:Date.now().toString(36),txt:t,by:ideaAnon?null:authed,store,at:nowStamp()};
+    try{
+      await setDoc(D('staffcomments'),{list:[rec,...(comments||[])]});
+      // email a copy to Angelo (best effort)
+      try{
+        await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
+          body:JSON.stringify({access_key:'d6ec7d78-c114-427b-868d-b1bbb4f6d28f',
+            subject:`💬 Staff comment — ${ideaAnon?'Anonymous':authed} (${STORES.find(s=>s.id===store).label})`,
+            from_name:'Gyro City Staff Book',
+            message:`From: ${ideaAnon?'Anonymous':authed}\nStore: ${STORES.find(s=>s.id===store).label}\n${new Date().toLocaleString()}\n\n${t}`})});
+      }catch{}
+      setIdeaTxt('');setIdeaAnon(false);
+      flash('Sent to Angelo ✓');
+    }catch(e){setErr('Could not send. ('+(e.message||e)+')');}
+    setIdeaSending(false);
+  }
+
+  // ---- Gyro Catch game ----
+  const G_GOOD=['🍅','🥒','🧅','🥩','🍗','🧀','🍋','🫒'];
+  function startGame(){
+    const st={on:true,over:false,score:0,lives:3,items:[],px:0.5,speed:1,spawn:0,t:performance.now()};
+    gRef.current=st;setG({...st});
+    cancelAnimationFrame(loopRef.current);
+    loopRef.current=requestAnimationFrame(gameTick);
+  }
+  function gameTick(now){
+    const st=gRef.current;
+    if(!st||!st.on)return;
+    const dt=Math.min(40,now-st.t);st.t=now;
+    st.spawn-=dt;
+    if(st.spawn<=0){
+      st.items.push({id:Math.random(),x:0.08+Math.random()*0.84,y:-0.05,e:G_GOOD[Math.floor(Math.random()*G_GOOD.length)]});
+      st.spawn=Math.max(380,950-st.score*14);
+    }
+    st.speed=1+st.score*0.03;
+    const fall=0.00040*st.speed*dt;
+    for(const it of st.items)it.y+=fall;
+    const keep=[];
+    for(const it of st.items){
+      if(it.y>=0.90){
+        if(Math.abs(it.x-st.px)<0.11){st.score+=1;}
+        else{st.lives-=1;}
+      }else keep.push(it);
+    }
+    st.items=keep;
+    if(st.lives<=0){
+      st.on=false;st.over=true;
+      setG({...st});
+      const cur=Number(scores?.[authed]||0);
+      if(scores!==null&&st.score>cur){
+        setDoc(D('gamescores'),{best:{...scores,[authed]:st.score}}).catch(()=>{});
+      }
+      return;
+    }
+    setG({...st});
+    loopRef.current=requestAnimationFrame(gameTick);
+  }
+  function movePaddle(e){
+    const st=gRef.current;
+    if(!st||!st.on)return;
+    const r=e.currentTarget.getBoundingClientRect();
+    const cx=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+    st.px=Math.max(0.06,Math.min(0.94,cx/r.width));
+  }
+  useEffect(()=>()=>cancelAnimationFrame(loopRef.current),[]);
+  useEffect(()=>{if(tab!=='game'&&gRef.current){gRef.current.on=false;cancelAnimationFrame(loopRef.current);}},[tab]);
+
+  // ===== render =====
+  const showWk=tab==='avail'||tab==='week';
+  const header=html`
+    <div class="hdr">
+      <div class="hdr-in">
+        <div class="hrow">
+          <div>
+            <h1>GYRO CITY</h1>
+            <div class="greet">${(()=>{const h=new Date().getHours();return h<12?'Καλημέρα':h<18?'Καλησπέρα':'Καλό βράδυ';})()}, ${authed} 🥙</div>
+          </div>
+          <button class="hello" onClick=${logOut}>👤 ${(authed||'').split(' ')[0]} · <span style="opacity:.8">LOG OUT</span></button>
+        </div>
+        <div class="stores">
+          ${STORES.map(s=>html`<button class=${store===s.id?'on':''} onClick=${()=>setStore(s.id)}>${s.label}</button>`)}
+        </div>
+        ${showWk&&html`
+          <div class="wknav">
+            <button class="arrow" onClick=${()=>setMonday(shiftMonday(monday,-1))}>‹</button>
+            <div class="wkmid">
+              <b>${weekLabel(monday)}</b>
+              <div class=${'sub'+(week.published?' pub':'')}>
+                ${monday===mondayOf(0)?'THIS WEEK':monday===mondayOf(1)?'NEXT WEEK':'WEEK OF '+monday} · ${week.published?'POSTED':'NOT POSTED YET'}
+              </div>
+            </div>
+            <button class="arrow" onClick=${()=>setMonday(shiftMonday(monday,1))}>›</button>
+          </div>`}
+        <div class="tabs">
+          ${[['avail','My availability'],['week','Schedule'],['inv','🧾 Invoices'],['low','🔻 Running low'],['idea','💬 Comments'],['game','🎮']].map(([id,label])=>html`
+            <button class=${tab===id?'on':''} onClick=${()=>setTab(id)}>${label}</button>`)}
+        </div>
+      </div>
+      <div class="meander"></div>
+    </div>`;
+
+  // ---- tab: invoices ----
+  const myToday=invoices.filter(x=>x.day===today&&x.by===authed).length;
+  const invTab=html`
+    <${Fragment}>
+      <div class="card" style="text-align:center;padding:22px 16px">
+        <div style="font-size:40px;margin-bottom:6px">🧾</div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:4px">Got an invoice from a delivery?</div>
+        <div class="muted mb10">Take a clear picture of the whole page.</div>
+        <label class="btn olive wide" style=${{opacity:uploading?0.6:1,fontSize:'16px',padding:'15px'}}>
+          ${uploading?'Uploading…':'📷 UPLOAD INVOICE'}
+          <input type="file" accept="image/*" capture="environment" style="display:none" disabled=${uploading} onChange=${e=>{const f=e.target.files[0];if(f)uploadInvoice(f);e.target.value='';}} />
+        </label>
+      </div>
+      <div class="center" style="padding:8px 0">
+        ${myToday>0
+          ?html`You uploaded <b>${myToday}</b> invoice${myToday===1?'':'s'} today ✓`
+          :'Snap every invoice the moment the driver hands it over.'}
+      </div>
+    <//>`;
+
+  // ---- tab: running low ----
+  const lowTab=html`
+    <${Fragment}>
+      <div style="font-size:14.5px;line-height:1.5;margin:0 2px 12px">
+        Running low on something? <b>Tap it.</b> Tap again if you made a mistake. The ordering team sees it instantly.
+      </div>
+      ${['PAPER GOODS','DRINKS'].map(cat=>html`
+        <div class="lbl mt10" key=${cat}>${cat}</div>
+        ${LOW_CATALOG.filter(c=>c.cat===cat).map(c=>{
+          const flagged=lowList.find(x=>x.name===c.n);
+          return html`
+            <button class="pick" style=${flagged?{borderColor:'var(--tomato)',background:'#FBEFEC'}:{}} key=${c.n} onClick=${()=>toggleLow(c.n,c.vend)}>
+              <div class="ico">${emojiFor(c.n)}</div>
+              <div class="nm">${c.n}<div class="pr">${c.vend}</div></div>
+              ${flagged?html`<span class="pill" style="background:var(--tomato)">LOW ✓</span>`:html`<span class="plus">＋</span>`}
+            </button>`;})}
+      `)}
+      <div class="row mt10">
+        <input style="flex:2" placeholder="Something else running low? Type it" value=${lowCustom} onInput=${e=>setLowCustom(e.target.value)} onKeyDown=${e=>{if(e.key==='Enter')addCustomLow();}} />
+        <button class="btn blue" onClick=${addCustomLow}>Flag it</button>
+      </div>
+      ${lowList.filter(x=>!LOW_CATALOG.some(c=>c.n===x.name)).map(x=>html`
+        <button class="pick" style="border-color:var(--tomato);background:#FBEFEC" key=${x.id} onClick=${()=>clearLow(x.id)}>
+          <div class="ico">${emojiFor(x.name)}</div>
+          <div class="nm">${x.name}<div class="pr">flagged by ${x.by}</div></div>
+          <span class="pill" style="background:var(--tomato)">LOW ✓</span>
+        </button>`)}
+    <//>`;
+
+  // ---- tab: availability ----
+  const availTab=html`
+    <${Fragment}>
+      ${!meEmp&&html`<div class="card center">You're not on the cashier/expo roster at ${STORES.find(s=>s.id===store).label} — availability isn't needed for your role. (Wrong store? Switch above.)</div>`}
+      ${meEmp&&html`
+        <div style="font-size:14.5px;line-height:1.5;margin:0 2px 10px">
+          Tap the days you <b>can work</b> the week of <b>${weekLabel(monday)}</b>. Once = ✓ available · twice = ✕ can't · three times = clear.
+        </div>
+        <div class="avgrid">
+          ${DAYS.map((d,di)=>{
+            const st=availFor(meEmp.id,di);
+            return html`
+              <button class=${'avday '+(st==='yes'?'yes':st==='no'?'no':'')} key=${d} onClick=${()=>toggleAvailDay(di)}>
+                ${d}
+                <div class="sub">${dayDate(monday,di)}</div>
+                <div class="mark">${st==='yes'?'✓':st==='no'?'✕':'·'}</div>
+              </button>`;
+          })}
+        </div>
+        <div class="lbl" style="margin:2px 2px 6px">DAY NOTES (OPTIONAL) — TAP A DAY TO ADD ONE</div>
+        <div class="chips mb10">
+          ${DAYS.map((d,di)=>{
+            const has=!!avail[meEmp.id]?.notes?.[di];
+            return html`
+              <button class=${'chip'+(noteDay===di?' on':'')} style=${has&&noteDay!==di?{borderColor:'var(--amber)',color:'#6E5A1B'}:{}} key=${d} onClick=${()=>openNoteDay(di)}>
+                ${d}${has?' ✎':''}
+              </button>`;
+          })}
+        </div>
+        ${noteDay!==null&&html`
+          <input class="mb10" placeholder=${'Note for '+DAYS[noteDay]+" (e.g. 'only after 4pm')"} value=${noteDraft} onInput=${e=>setNoteDraft(e.target.value)} onBlur=${saveDayNote} />
+        `}
+        ${Object.keys(avail[meEmp.id]?.notes||{}).length>0&&html`
+          <div class="muted" style="margin:0 2px 8px">
+            ${DAYS.map((d,di)=>avail[meEmp.id]?.notes?.[di]?html`<div key=${d}><b>${d}:</b> ${avail[meEmp.id].notes[di]}</div>`:null)}
+          </div>
+        `}
+        <div class="muted" style="margin:4px 2px">Day taps save instantly — your manager sees them right away. Notes save when you tap out of the box. Use the ‹ › arrows to set future weeks.</div>
+      `}
+    <//>`;
+
+  // ---- tab: week schedule ----
+  const dayChips=html`
+    <div class="days">
+      ${DAYS.map((d,di)=>html`
+        <button class=${'day'+(day===di?' on':'')} key=${d} onClick=${()=>setDay(di)}>
+          ${d}
+          <div class="sub">${dayDate(monday,di)}</div>
+        </button>`)}
+    </div>`;
+
+  const weekTab=week.published?html`
+    <${Fragment}>
+      ${dayChips}
+      <div class="dayhdr">${DAYS[day].toUpperCase()} · STORE HOURS ${DAY_HOURS[day]}</div>
+      ${POSITIONS.map(pos=>{
+        const shifts=dayShifts.filter(s=>s.position===pos.id);
+        if(!shifts.length)return null;
+        return html`
+          <div class="pos" style=${{borderLeftColor:pos.edge}} key=${pos.id}>
+            <div class="pos-h" style=${{background:pos.tint}}>${pos.label.toUpperCase()}</div>
+            <div class="pos-b">
+              ${shifts.map(s=>html`
+                <div class="shift" key=${s.id}>
+                  <b style=${s.empId===meEmp?.id?{color:pos.edge}:{}}>${empById(s.empId).name}${s.empId===meEmp?.id?' (you)':''}</b>
+                  <span class="t">${fmtTime(s.start)}–${fmtTime(s.end)}</span>
+                </div>`)}
+            </div>
+          </div>`;
+      })}
+      ${dayShifts.length===0&&html`<div class="center">Nobody scheduled this day.</div>`}
+    <//>`
+  :html`
+    <div class="card center">
+      The schedule for <b>${weekLabel(monday)}</b> hasn't been posted yet.<br/>Check back once your manager publishes it.
+    </div>`;
+
+  // ---- punch-in screen ----
+  if(!authed){
+    const dots=[0,1,2,3].map(i=>html`<div class=${'dot'+(pinBuf.length>i?' f':'')} key=${i}></div>`);
+    const keypad=html`
+      <div class=${'dots'+(pinBad?' bad':'')}>${dots}</div>
+      <div class="pad">
+        ${[1,2,3,4,5,6,7,8,9].map(k=>html`<button class="key" key=${k} onClick=${()=>pressKey(String(k))}>${k}</button>`)}
+        <button class="key ghostk" onClick=${()=>{setLoginName(null);setPinBuf('');setPinBad(false);}}>←</button>
+        <button class="key" onClick=${()=>pressKey('0')}>0</button>
+        <button class="key ghostk" onClick=${()=>pressKey('back')}>⌫</button>
+      </div>`;
+    return html`
+      <div class="login">
+        <h1>GYRO CITY</h1>
+        <span class="tag">STAFF BOOK</span>
+        <div class="lcard">
+          ${!authReady?html`
+            <div class="whoami">One second…</div>
+            <div class="pinsub">Connecting to Gyro City.</div>
+            <div class="dots"><div class="dot f"></div><div class="dot"></div><div class="dot f"></div><div class="dot"></div></div>
+          `:!loginName?html`
+            <div class="whoami">Who are you?</div>
+            <div class="pinsub">Tap your name to punch in.</div>
+            <div class="namegrid">
+              ${allNames.map(n=>html`<button class=${'chip'+(localStorage.getItem('gc-lastname')===n?' on':'')} key=${n} onClick=${()=>pickLogin(n)}>${n}</button>`)}
+            </div>
+          `:html`
+            <div class="whoami">${loginName}</div>
+            <div class="pinsub">
+              Enter your 4-digit PIN.<div style="font-size:12px;color:var(--faint);margin-top:2px">First time? The PIN you type becomes yours.</div>${loginErr?html`<div style="color:var(--tomato);font-weight:700;margin-top:4px">${loginErr}</div>`:''}${true?'':
+                'Enter the manager PIN to reset someone\u2019s code'}
+              ${pinBad?html`<div style="color:var(--tomato);font-weight:700;margin-top:4px">Wrong PIN — try again</div>`:''}
+            </div>
+            ${keypad}
+            ${authBusy&&html`<div class="pinsub" style="margin-top:10px">Signing in…</div>`}
+            ${html`
+              <div style="text-align:center;margin-top:12px">
+                <button class="ghost" style="color:var(--blue);font-weight:600" onClick=${()=>{setLoginName(null);setPinBuf('');setPinBad(false);setLoginErr('');localStorage.removeItem('gc-lastname');}}>Not ${loginName}? Switch name</button>
+              </div>
+              <div style="text-align:center;margin-top:6px;font-size:12px;color:var(--faint)">Forgot your PIN? Ask a manager to reset it.</div>`}
+          `}
+        </div>
+        ${connected===false&&html`<div class="banner err" style="max-width:420px;margin-top:14px"><b>Can't reach the database.</b> Check internet.</div>`}
+      </div>`;
+  }
+
+  const myIdeas=(comments||[]).filter(c=>c.by===authed);
+  const ideaTab=html`
+    <${Fragment}>
+      <div class="card">
+        <b style="font-size:16px">💬 Comments</b>
+        <div class="muted" style="margin:4px 0 10px">Something we should change? A problem nobody's fixing? An idea for the menu? It goes straight to Angelo.</div>
+        <textarea style="width:100%;border:1.5px solid var(--line);border-radius:8px;padding:11px;font-size:16px;font-family:inherit;background:#FDFDFB;outline:none;min-height:110px;line-height:1.5" placeholder="Write it here…" value=${ideaTxt} onInput=${e=>setIdeaTxt(e.target.value)}></textarea>
+        <label style="display:flex;align-items:center;gap:8px;margin:10px 2px;font-size:14px;color:var(--faint);cursor:pointer">
+          <input type="checkbox" style="width:auto" checked=${ideaAnon} onChange=${e=>setIdeaAnon(e.target.checked)} />
+          Send anonymously — your name isn't saved or shown anywhere
+        </label>
+        <button class="btn olive wide" disabled=${ideaSending} onClick=${submitIdea}>${ideaSending?'Submitting…':'Submit — a copy emails Angelo'}</button>
+      </div>
+      ${myIdeas.length>0&&html`
+        <div class="lbl">YOUR PAST SUBMISSIONS</div>
+        ${myIdeas.map(c=>html`
+          <div class="card" style="padding:11px 14px" key=${c.id}>
+            <div style="font-size:14.5px;line-height:1.5;white-space:pre-wrap">${c.txt}</div>
+            <div class="mono" style="font-size:11px;color:var(--faint);margin-top:5px">${c.at}</div>
+          </div>`)}
+      `}
+    <//>`;
+
+  const topScores=Object.entries(scores||{}).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const gameTab=html`
+    <${Fragment}>
+      <div class="card" style="padding:12px 14px">
+        <b style="font-size:16px">🎮 Gyro Catch</b>
+        <div class="muted" style="margin-top:3px">Slide the pita, catch the ingredients. Miss 3 and it's over. Speed keeps climbing.</div>
+      </div>
+      <div class="garea" onPointerDown=${movePaddle} onPointerMove=${movePaddle} onTouchStart=${movePaddle} onTouchMove=${movePaddle}>
+        ${g.on&&html`
+          <div class="ghud"><span>SCORE ${g.score}</span><span>${'❤️'.repeat(g.lives)}</span></div>
+          ${g.items.map(it=>html`<div class="gitem" key=${it.id} style=${{left:(it.x*100)+'%',top:(it.y*100)+'%'}}>${it.e}</div>`)}
+          <div class="gpaddle" style=${{left:(g.px*100)+'%'}}>🫓</div>
+        `}
+        ${!g.on&&html`
+          <div class="gover">
+            ${g.over?html`
+              <div style="font-size:20px;font-weight:800">Game over!</div>
+              <div style="font-size:34px;font-weight:800;margin:6px 0">${g.score}</div>
+              <div style="font-size:13.5px;opacity:.85">${g.score>=(Number(scores?.[authed])||0)&&g.score>0?'New personal best ✨':'Best: '+(scores[authed]||0)}</div>
+            `:html`
+              <div style="font-size:40px">🥙</div>
+              <div style="font-size:19px;font-weight:800;margin:6px 0 2px">Gyro Catch</div>
+              <div style="font-size:13.5px;opacity:.85">Your best: ${scores?.[authed]||0}</div>
+            `}
+            <button class="btn olive" style="margin-top:14px;padding:13px 34px;font-size:16px" onClick=${startGame}>${g.over?'Play again':'START'}</button>
+            ${topScores.length>0&&html`
+              <div class="lb">
+                <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.12em;opacity:.7;margin-bottom:4px">LEADERBOARD</div>
+                ${topScores.map(([n,s],i)=>html`
+                  <div class="lbrow" key=${n}><span>${i===0?'🏆 ':''}${n}${n===authed?' (you)':''}</span><b>${s}</b></div>`)}
+              </div>`}
+          </div>
+        `}
+      </div>
+    <//>`;
+
+  return html`
+    <${Fragment}>
+      ${header}
+      <div class="wrap">
+        ${connected===false&&html`<div class="banner err"><b>Can't reach the database.</b> Check your internet connection.</div>`}
+        ${err&&html`<div class="banner err">${err}</div>`}
+        ${tab==='inv'?invTab:tab==='low'?lowTab:tab==='avail'?availTab:tab==='game'?gameTab:tab==='idea'?ideaTab:weekTab}
+      </div>
+      ${toast&&html`<div class="toast">${toast}</div>`}
+    <//>`;
+}
+
+render(html`<${App} />`, document.getElementById('app'));
+</script>
+</body>
+</html>
