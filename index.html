@@ -578,9 +578,9 @@ function App(){
         <div class="hrow">
           <div>
             <h1>GYRO CITY</h1>
-            <div class="greet">${(()=>{const h=new Date().getHours();return h<12?'Καλημέρα':h<18?'Καλησπέρα':'Καλό βράδυ';})()}, ${authed} 🥙</div>
+            <div class="greet">${(()=>{const h=new Date().getHours();return h<12?'Καλημέρα':h<18?'Καλησπέρα':'Καλό βράδυ';})()}, ${authed}</div>
           </div>
-          <button class="hello" onClick=${logOut}>👤 ${(authed||'').split(' ')[0]} · <span style="opacity:.8">LOG OUT</span></button>
+          <button class="hello" onClick=${logOut}>${(authed||'').split(' ')[0]} · <span style="opacity:.8">LOG OUT</span></button>
         </div>
         <div class="stores">
           ${STORES.map(s=>html`<button class=${store===s.id?'on':''} onClick=${()=>setStore(s.id)}>${s.label}</button>`)}
@@ -597,7 +597,7 @@ function App(){
             <button class="arrow" onClick=${()=>setMonday(shiftMonday(monday,1))}>›</button>
           </div>`}
         <div class="tabs">
-          ${[['week','Schedule'],['avail','My availability'],['inv','🧾 Invoices'],['low','🔻 Running low'],['idea','💬 Comments'],['game','🎮']].map(([id,label])=>html`
+          ${[['week','Schedule'],['avail','My availability'],['inv','Invoices'],['low','Running low'],['idea','Comments'],['game','Game']].map(([id,label])=>html`
             <button class=${tab===id?'on':''} onClick=${()=>setTab(id)}>${label}</button>`)}
         </div>
       </div>
@@ -609,11 +609,10 @@ function App(){
   const invTab=html`
     <${Fragment}>
       <div class="card" style="text-align:center;padding:22px 16px">
-        <div style="font-size:40px;margin-bottom:6px">🧾</div>
         <div style="font-size:16px;font-weight:700;margin-bottom:4px">Got an invoice from a delivery?</div>
         <div class="muted mb10">Take a clear picture of the whole page.</div>
         <label class="btn olive wide" style=${{opacity:uploading?0.6:1,fontSize:'16px',padding:'15px'}}>
-          ${uploading?'Uploading…':'📷 UPLOAD INVOICE'}
+          ${uploading?'Uploading…':'UPLOAD INVOICE'}
           <input type="file" accept="image/*" capture="environment" style="display:none" disabled=${uploading} onChange=${e=>{const f=e.target.files[0];if(f)uploadInvoice(f);e.target.value='';}} />
         </label>
       </div>
@@ -785,7 +784,7 @@ function App(){
   const ideaTab=html`
     <${Fragment}>
       <div class="card">
-        <b style="font-size:16px">💬 Comments</b>
+        <b style="font-size:16px">Comments</b>
         <div class="muted" style="margin:4px 0 10px">Something we should change? A problem nobody's fixing? An idea for the menu? It goes straight to Angelo.</div>
         <textarea style="width:100%;border:1.5px solid var(--line);border-radius:8px;padding:11px;font-size:16px;font-family:inherit;background:#FDFDFB;outline:none;min-height:110px;line-height:1.5" placeholder="Write it here…" value=${ideaTxt} onInput=${e=>setIdeaTxt(e.target.value)}></textarea>
         <label style="display:flex;align-items:center;gap:8px;margin:10px 2px;font-size:14px;color:var(--faint);cursor:pointer">
@@ -808,7 +807,7 @@ function App(){
   const gameTab=html`
     <${Fragment}>
       <div class="card" style="padding:12px 14px">
-        <b style="font-size:16px">🎮 Gyro Catch</b>
+        <b style="font-size:16px">Gyro Catch</b>
         <div class="muted" style="margin-top:3px">Slide the pita, catch the ingredients. Miss 3 and it's over. Speed keeps climbing.</div>
       </div>
       <div class="garea" onPointerDown=${movePaddle} onPointerMove=${movePaddle} onTouchStart=${movePaddle} onTouchMove=${movePaddle}>
