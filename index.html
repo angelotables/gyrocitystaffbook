@@ -66,6 +66,12 @@
     cursor:pointer;white-space:nowrap;transition:all .18s;font-family:'Inter',sans-serif}
   .tabs button.on{background:transparent;color:#FFFFFF;border-bottom-color:#F4F6F8;box-shadow:none}
   .meander{height:0}
+  .storebar{position:fixed;top:0;left:0;right:0;height:3px;z-index:300;pointer-events:none}
+  .storepill{position:fixed;right:14px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:250;
+    border:none;border-radius:999px;padding:10px 16px;font-size:11px;font-weight:800;letter-spacing:.12em;
+    color:#fff;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 6px 20px -6px rgba(19,26,34,.45);
+    display:flex;align-items:center;gap:7px;transition:transform .12s}
+  .storepill:active{transform:scale(.96)}
 
   /* ---------- cards & inputs ---------- */
   .card{background:var(--card);border:1px solid rgba(228,224,212,.8);border-radius:var(--r);padding:16px;margin-bottom:14px;
@@ -839,6 +845,15 @@ function App(){
       </div>
     <//>`;
 
+  const STORE_COL={astoria:'#0E2A47',macdougal:'#1F5F52'};
+  const storeSignal=html`
+    <${Fragment}>
+      <div class="storebar" style=${{background:STORE_COL[store]}}></div>
+      <button class="storepill" style=${{background:STORE_COL[store]}}
+        onClick=${()=>{const n2=store==='astoria'?'macdougal':'astoria';setStore(n2);localStorage.setItem('gc-store',n2);}}>
+        ${store==='astoria'?'ASTORIA':'MACDOUGAL'}<span style="opacity:.7">⇄</span>
+      </button>
+    <//>`;
   return html`
     <${Fragment}>
       ${header}
@@ -847,6 +862,7 @@ function App(){
         ${err&&html`<div class="banner err">${err}</div>`}
         ${tab==='inv'?invTab:tab==='low'?lowTab:tab==='avail'?availTab:tab==='game'?gameTab:tab==='idea'?ideaTab:weekTab}
       </div>
+      ${storeSignal}
       ${toast&&html`<div class="toast">${toast}</div>`}
     <//>`;
 }
