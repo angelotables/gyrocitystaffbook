@@ -386,11 +386,14 @@ function App(){
   function pressKey(k){
     if(authBusy)return;
     if(pinBad)setPinBad(false);
-    if(k==='back'){setPinBuf(pinBuf.slice(0,-1));return;}
-    if(pinBuf.length>=4)return;
-    const nb=pinBuf+k;
-    setPinBuf(nb);
-    if(nb.length===4)setTimeout(()=>submitPin(nb),120);
+    // Functional update: fast taps can land in the same frame, so never read a stale buffer.
+    setPinBuf(prev=>{
+      if(k==='back')return prev.slice(0,-1);
+      if(prev.length>=4)return prev;
+      const nb=prev+k;
+      if(nb.length===4)setTimeout(()=>submitPin(nb),120);
+      return nb;
+    });
   }
   async function submitPin(pin){
     const empId=idForName(loginName);
