@@ -193,6 +193,89 @@
   .lb{width:100%;max-width:280px;margin-top:12px}
   .lbrow{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.14);font-size:14px}
   .mt8{margin-top:8px}.mt10{margin-top:10px}.mb8{margin-bottom:8px}.mb10{margin-bottom:10px}.mb12{margin-bottom:12px}
+
+  /* ===== Backyard — namespaced by- ; Staff Book already defines .row/.card/.chip/.banner/.toast ===== */
+  .by-sub{display:flex;gap:6px;margin-bottom:14px}
+  .by-sub button{flex:1;border:1px solid var(--line);background:var(--card);color:var(--faint);border-radius:9px;
+    padding:9px 0;font-size:12px;font-weight:800;letter-spacing:.1em;cursor:pointer;font-family:inherit}
+  .by-sub button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .by-srow{display:flex;gap:9px;margin-bottom:14px}
+  .by-search{flex:1;min-width:0;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);
+    color:var(--ink);outline:none;font-size:15px;font-family:inherit}
+  .by-search:focus{border-color:var(--navy)}
+  .by-mode{flex:none;display:flex;align-items:center;gap:6px;padding:0 14px;border:1px solid var(--navy);border-radius:10px;
+    color:var(--navy);background:var(--card);font-size:13px;font-weight:800;letter-spacing:.06em;cursor:pointer;font-family:inherit}
+  .by-mode svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .by-cat{margin-bottom:20px}
+  .by-cath{display:flex;align-items:center;justify-content:space-between;padding:0 2px 7px}
+  .by-cath .nme{font-size:14px;font-weight:800;letter-spacing:.1em;color:var(--navy)}
+  .by-cath .need{font-size:11.5px;font-weight:800;letter-spacing:.08em;color:#B3261E}
+  .by-card{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .by-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #EEEDE9}
+  .by-row > :first-child{flex:1 1 auto;min-width:0}
+  .by-row:last-child{border-bottom:none}
+  .by-nm{font-weight:600;font-size:14.5px;line-height:1.2}
+  .by-meta{font-size:11.5px;color:var(--faint);margin-top:2px}
+  .by-seg{display:flex;flex:none;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .by-seg button{font-size:12px;font-weight:800;letter-spacing:.06em;padding:8px 0;width:48px;color:#98A0AB;
+    background:#F7F6F3;border:none;cursor:pointer;font-family:inherit}
+  .by-seg button + button{border-left:1px solid var(--line)}
+  .by-seg button.g-on{background:#1F6E43;color:#fff}
+  .by-seg button.l-on{background:#A66A00;color:#fff}
+  .by-seg button.o-on{background:#B3261E;color:#fff}
+  .by-chead{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--navy);color:#fff;
+    border-radius:10px;padding:12px 14px;margin-bottom:14px}
+  .by-chead .l{font-size:15px;font-weight:800;letter-spacing:.06em}
+  .by-chead .r{font-size:11.5px;opacity:.85;text-align:right;line-height:1.5}
+  .by-cin{width:74px;text-align:center;font-size:17px;font-weight:600;padding:9px 6px;border:1px solid var(--line);
+    border-radius:9px;background:#FBFAF8;outline:none;flex:none;font-family:inherit}
+  .by-cin:focus{border-color:var(--navy)}
+  .by-ccol{display:flex;flex-direction:column;align-items:center;gap:4px;flex:none}
+  .by-unit{font-size:10.5px;font-weight:800;letter-spacing:.08em;color:var(--faint);border:1px dashed var(--line);
+    border-radius:5px;padding:2px 8px;background:none;cursor:pointer;font-family:inherit}
+  .by-uin{width:74px;text-align:center;font-size:12px;padding:4px;border:1px solid var(--navy);border-radius:5px;
+    outline:none;background:#fff;font-family:inherit}
+  .by-wk{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:14px}
+  .by-wkt{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--navy);margin-bottom:8px}
+  .by-wkg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+  .by-wkc{border:1px solid var(--line);border-radius:8px;padding:6px 2px;text-align:center}
+  .by-wkc .d{font-size:9.5px;font-weight:800;letter-spacing:.08em;color:var(--faint)}
+  .by-wkc .w{font-size:11.5px;font-weight:800;margin-top:2px;color:var(--navy);min-height:15px}
+  .by-wkc.done{background:#E3EFE7;border-color:#1F6E43}
+  .by-wkc.done .w{color:#1F6E43}
+  .by-wkc.today{border-color:var(--navy);border-width:1.5px}
+  .by-wkn{font-size:12.5px;margin-top:9px;font-weight:700}
+  .by-wkn.warn{color:#A66A00}.by-wkn.ok{color:#1F6E43}.by-wkn.mut{color:var(--faint);font-weight:400}
+  .by-ban{background:#F5EBD6;border:1px solid #A66A00;color:#A66A00;border-radius:10px;padding:10px 12px;
+    font-size:13px;font-weight:700;margin-bottom:14px}
+  .by-save{position:fixed;left:14px;right:14px;bottom:calc(16px + env(safe-area-inset-bottom));max-width:532px;margin:0 auto;
+    padding:14px;background:#1F6E43;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;letter-spacing:.1em;
+    z-index:25;box-shadow:0 8px 24px rgba(0,0,0,.18);text-align:center;cursor:pointer;font-family:inherit}
+  .by-oh{font-size:14px;font-weight:800;letter-spacing:.1em;padding:0 2px 7px}
+  .by-oh.out{color:#B3261E}.by-oh.low{color:#A66A00}
+  .by-restock{font-size:12px;font-weight:800;letter-spacing:.06em;color:#1F6E43;border:1px solid #1F6E43;border-radius:9px;
+    padding:8px 12px;flex:none;background:#E3EFE7;cursor:pointer;font-family:inherit}
+  .by-copy{display:block;width:100%;padding:13px;margin-bottom:16px;background:var(--navy);color:#fff;border:none;
+    border-radius:10px;font-size:15px;font-weight:800;letter-spacing:.1em;cursor:pointer;font-family:inherit}
+  .by-empty{text-align:center;padding:44px 20px;color:var(--faint)}
+  .by-empty .big{font-size:19px;font-weight:800;letter-spacing:.08em;color:#1F6E43;margin-bottom:6px}
+  .by-addf{display:flex;flex-direction:column;gap:9px;background:var(--card);border:1px solid var(--line);
+    border-radius:10px;padding:12px;margin-bottom:20px}
+  .by-addf select,.by-addf input{padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:#FBFAF8;
+    outline:none;width:100%;font-size:15px;font-family:inherit}
+  .by-btn{padding:12px;background:var(--navy);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:800;
+    letter-spacing:.1em;cursor:pointer;font-family:inherit}
+  .by-rm{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--faint);border:1px solid var(--line);
+    border-radius:9px;padding:8px 12px;flex:none;background:#F7F6F3;cursor:pointer;font-family:inherit}
+  .by-rm.armed{color:#fff;background:#B3261E;border-color:#B3261E}
+  .by-log{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .by-logr{padding:9px 12px;border-bottom:1px solid #EEEDE9;font-size:13px}
+  .by-logr:last-child{border-bottom:none}
+  .by-logr .t{color:var(--faint);font-size:11.5px;margin-top:1px}
+  .by-sec{font-size:14px;font-weight:800;letter-spacing:.1em;color:var(--navy);padding:0 2px 7px}
+  .by-note{font-size:12.5px;color:var(--faint);margin:-2px 2px 10px;line-height:1.5}
+  .by-pend{font-size:10.5px;font-weight:800;letter-spacing:.08em;color:#A66A00;background:#F5EBD6;
+    border:1px solid #E5D3AC;border-radius:6px;padding:5px 9px;flex:none;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -246,27 +329,6 @@ const SEED = [
   ['George','cook',1300,'wk'],['Jimmy','cook',22,'hr'],['Sostis','cook',1200,'wk'],['Kosta','cook',1600,'wk'],['Theodoros','cook',22,'hr'],['Yianni','cook',22,'hr'],
   ['Joshua','prep',19,'hr'],['Eduardo','prep',22,'hr'],['Maykol','prep',20,'hr'],
 ].map((e,i)=>({ id:'e'+i, name:e[0], role:e[1], rate:e[2], rateType:e[3] }));
-const LOW_CATALOG=[
-  {n:'38oz Paper Salad Bowls',cat:'PAPER GOODS',vend:'EL USA'},
-  {n:'Lids PET 32-38oz',cat:'PAPER GOODS',vend:'EL USA'},
-  {n:'Souffle Cups 2oz',cat:'PAPER GOODS',vend:'EL USA'},
-  {n:'Lunch Napkins 1ply',cat:'PAPER GOODS',vend:'EL USA'},
-  {n:'Bio Containers Craft #8',cat:'PAPER GOODS',vend:'EL USA'},
-  {n:'Forks Heavy Duty Wrapped',cat:'PAPER GOODS',vend:'EL USA'},
-  {n:'Coke Mexican (glass 12oz)',cat:'DRINKS',vend:'VV / Beer Depot'},
-  {n:'Coke Glass 8oz',cat:'DRINKS',vend:'VV'},
-  {n:'Coke Diet Glass 8oz',cat:'DRINKS',vend:'VV / Beer Depot'},
-  {n:'Sprite Glass 8oz',cat:'DRINKS',vend:'VV'},
-  {n:'Poland Spring Water',cat:'DRINKS',vend:'VV / Beer Depot'},
-  {n:'Zagori Sparkling',cat:'DRINKS',vend:'EL USA'},
-  {n:'Zagori Sparkling Lemon',cat:'DRINKS',vend:'EL USA'},
-  {n:'Zagori Still 500ml',cat:'DRINKS',vend:'EL USA'},
-  {n:'EPSA Sour Cherry',cat:'DRINKS',vend:'Optima'},
-  {n:'EPSA Orangeade',cat:'DRINKS',vend:'Optima'},
-  {n:'EPSA Lemonade',cat:'DRINKS',vend:'Optima'},
-];
-const EMOJI=[['bowl','🥣'],['lid','📦'],['cup','🥤'],['napkin','🧻'],['container','📦'],['fork','🍴'],['coke','🥤'],['sprite','🥤'],['water','💧'],['spring','💧'],['zagori','🫧'],['epsa','🥤'],['soda','🥤']];
-const emojiFor=(name)=>{const n=name.toLowerCase();for(const [k,e] of EMOJI){if(n.includes(k))return e;}return '📦';};
 
 // ===== helpers =====
 const fmtTime=(m)=>{if(m===24*60)return '12AM';let h2=Math.floor(m/60),mi=m%60;const ap=h2>=12&&h2<24?'PM':'AM';h2=h2%12||12;return `${h2}${mi?':'+String(mi).padStart(2,'0'):''}${ap}`;};
@@ -276,6 +338,50 @@ const dayDate=(m,di)=>{const[y,mo,d]=m.split('-').map(Number);return new Date(y,
 const shiftMonday=(m,dw)=>{const[y,mo,d]=m.split('-').map(Number);const n=new Date(y,mo-1,d+dw*7);return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;};
 const emptyWeek=()=>({shifts:[],published:false});
 const nowStamp=()=>{const d=new Date();return d.toLocaleDateString(undefined,{month:'short',day:'numeric'})+' '+d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});};
+
+// ===== Backyard — Astoria backyard inventory (doc: gyrocity/backyard_inventory) =====
+const BY_DOC='backyard_inventory';
+const BY_CATS=[
+  {id:'branded',label:'GYRO CITY BRANDED'},
+  {id:'nonbranded',label:'NON-BRANDED'},
+  {id:'pos',label:'POS / REGISTER'},
+  {id:'janitorial',label:'JANITORIAL'},
+  {id:'cintas',label:'CINTAS (WEEKLY ROUTE)'},
+  {id:'drinks',label:'DRINKS'},
+  {id:'catering',label:'CATERING SUPPLIES'},
+];
+const BY_SEED={
+  branded:[['Rice bowls','cases'],['Rice bowl lids','cases'],['Salad bowls','cases'],['Salad bowl lids','cases'],['Spread bowls','cases'],['Spread bowl lids','cases'],['French fry boxes','cases'],['Platter boxes','cases'],['Gyro bbq bags','packs'],['Small to go bags','packs'],['Medium to go bags','packs'],['Large to go bags','packs']],
+  nonbranded:[['9 inch plates','cases'],['Paper cups','cases'],['Plastic forks','boxes'],['Plastic spoons','boxes'],['Plastic knives','boxes'],['Napkins','cases'],['Souvlaki sticks','boxes'],['2 oz sauce cups','sleeves'],['2 oz sauce cup lids','sleeves'],['8 oz soup cups','sleeves'],['8 oz soup cup lids','sleeves'],['Straws','boxes']],
+  pos:[['POS receipt paper (front register)','rolls'],['Kitchen printer paper','rolls'],['Ink cartridges','each']],
+  janitorial:[['Black garbage bags','boxes'],['Recycle garbage bags','boxes'],['XL black gloves','boxes'],['Cleaning supplies','each'],['Sanitizing wipes','each']],
+  cintas:[['Z-fold paper towels','packs'],['Soap for dispensers','each'],['Terry towels','each'],['Aprons','each']],
+  drinks:[['Zagori sparkling','cases'],['Zagori sparkling peach','cases'],['Zagori sparkling lemon','cases'],['Zagori water still','cases'],['Epsa lemon','cases'],['Epsa orange','cases'],['Epsa cherry','cases'],['Mexican Coke glass','cases'],['Mexican Sprite glass','cases'],['Mexican Diet Coke glass','cases'],['Poland Spring water','cases']],
+  catering:[['Metal trays full','cases'],['Metal trays half','cases'],['Metal bases','cases'],['Sternos','cases'],['Serving spoons','each']],
+};
+const bySlug=(s)=>s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+function bySeedItems(){
+  const items=[];let ord=0;
+  for(const c of BY_CATS)for(const [name,unit] of (BY_SEED[c.id]||[]))
+    items.push({id:`${c.id}-${bySlug(name)}`,name,cat:c.id,status:'good',ts:0,by:'',ord:ord++,count:null,cts:0,cby:'',unit});
+  return items;
+}
+const byRel=(t)=>{if(!t)return '';const d=Date.now()-t;
+  if(d<60e3)return 'just now';if(d<3600e3)return Math.floor(d/60e3)+'m ago';
+  if(d<86400e3)return Math.floor(d/3600e3)+'h ago';return Math.floor(d/86400e3)+'d ago';};
+const byCatLabel=(id)=>(BY_CATS.find(c=>c.id===id)||{}).label||id;
+// The ONLY automatic status logic: 0 => out; a real number clears a stale OUT; never stomps a manual LOW.
+const byCountStatus=(n,cur)=>n<=0?'out':(cur==='out'?'good':cur);
+const byDateKey=(d)=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const byTodayKey=()=>byDateKey(new Date());
+const byWeekKeys=()=>{const d=new Date();const mon=new Date(d);mon.setDate(d.getDate()-((d.getDay()+6)%7));
+  return [0,1,2,3,4,5,6].map(i=>{const x=new Date(mon);x.setDate(mon.getDate()+i);return byDateKey(x);});};
+const BY_WK=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+const byInitials=(name)=>{const p=String(name||'').trim().split(/\s+/).filter(Boolean);
+  if(!p.length)return '';
+  return (p.length===1?p[0].slice(0,2):p.map(w=>w[0]).join('')).toUpperCase().slice(0,3);};
+const IcStock=()=>html`<svg viewBox="0 0 24 24"><path d="M3 4h18M3 12h18M3 20h18"/><rect x="6" y="6" width="5" height="4"/><rect x="13" y="14" width="5" height="4"/></svg>`;
+const IcCount=()=>html`<svg viewBox="0 0 24 24"><path d="M5 5v14M9 5v14M13 5v14M17 5v14M3 17L21 7"/></svg>`;
 
 function App(){
   const [store,setStore]=useState(localStorage.getItem('gc-store')||'astoria');
@@ -288,6 +394,7 @@ function App(){
 
   // punch-in auth (real Firebase login — the 4-digit PIN is the password)
   const [authed,setAuthed]=useState(null);         // logged-in name
+  const [myUid,setMyUid]=useState(null);           // === roster employee id
   const [authReady,setAuthReady]=useState(false);
   const [authBusy,setAuthBusy]=useState(false);
   const [loginErr,setLoginErr]=useState('');
@@ -312,8 +419,18 @@ function App(){
   const [invoices,setInvoices]=useState([]);
   const [uploading,setUploading]=useState(false);
   // running low
-  const [lowList,setLowList]=useState([]);
-  const [lowCustom,setLowCustom]=useState('');
+  // backyard
+  const [byData,setByData]=useState(null);
+  const [byTab,setByTab]=useState('stock');   // stock | order | edit
+  const [byQ,setByQ]=useState('');
+  const [byCountMode,setByCountMode]=useState(false);
+  const [byEntries,setByEntries]=useState({});
+  const [byArmed,setByArmed]=useState('');
+  const [byUnitEdit,setByUnitEdit]=useState('');
+  const [byAdd,setByAdd]=useState({cat:'branded',name:'',unit:''});
+  const [byRoster,setByRoster]=useState(null); // Astoria cashier/expo — the weekly-count roster
+  const byArmT=useRef(null);
+  const bySeeded=useRef(false);
   // schedule
   const [monday,setMonday]=useState(mondayOf(0));
   const [day,setDay]=useState((new Date().getDay()+6)%7); // opens on today's weekday (Mon=0…Sun=6)
@@ -351,8 +468,9 @@ function App(){
       if(u&&!u.isAnonymous){
         const e=(emp||SEED).find(x=>x.id===u.uid);
         setAuthed(e?e.name:u.uid);
+        setMyUid(u.uid); // === this employee's roster id; stable identity for attribution
       }else{
-        setAuthed(null);
+        setAuthed(null);setMyUid(null);
       }
       setAuthReady(true);
     });
@@ -364,12 +482,24 @@ function App(){
     const u3=onSnapshot(D('emp_'+store),(s)=>{setEmp(s.exists()?s.data().list:SEED);},()=>{});
     return ()=>u3();
   },[store]);
+  // Backyard is Astoria-only: one shared doc, and the weekly roster is Astoria's cashier/expo staff
+  // (the people who can actually sign into Staff Book), regardless of the store toggle above.
   useEffect(()=>{
     if(!authed)return;
-    setLowList([]);
-    const u2=onSnapshot(D('low_'+store),(s)=>{setConnected(true);setLowList(s.exists()?s.data().list:[]);},()=>setConnected(false));
-    return ()=>u2();
-  },[store,authed]);
+    const ub=onSnapshot(D(BY_DOC),(s)=>{
+      setConnected(true);
+      if(s.exists())setByData(s.data());
+      else if(!bySeeded.current){
+        bySeeded.current=true;
+        setDoc(D(BY_DOC),{items:bySeedItems(),log:[],counts:{}}).catch(()=>setErr('Could not set up the backyard list.'));
+      }
+    },()=>setConnected(false));
+    const ur=onSnapshot(D('emp_astoria'),(s)=>{
+      const list=s.exists()?(s.data().list||[]):SEED;
+      setByRoster(list.filter(e=>e&&(e.role==='cashier'||e.role==='expo')));
+    },()=>{});
+    return ()=>{ub();ur();};
+  },[authed]);
   useEffect(()=>{
     if(!authed)return;
     const u4=onSnapshot(D(`week_${store}_${monday}`),(s)=>{setWeek(s.exists()?s.data():emptyWeek());},()=>setConnected(false));
@@ -467,23 +597,111 @@ function App(){
     setUploading(false);
   }
 
-  // ---- running low ----
-  const saveLow=(list)=>{setLowList(list);return write('low_'+store,{list});};
-  function toggleLow(name,vend){
-    if(!requireName())return;
-    const ex=lowList.find(x=>x.name===name);
-    if(ex)saveLow(lowList.filter(x=>x.name!==name));
-    else saveLow([{id:Date.now().toString(36),name,vend:vend||'',by:authed,at:nowStamp()},...lowList]);
+  // ---- backyard actions ----
+  const byMeName=(()=>{const e=(byRoster||[]).find(x=>x.id===myUid);return e?e.name:authed;})();
+  const byMeIni=byInitials(byMeName);
+  async function byWrite(patch,logTxt){
+    if(!byData)return;
+    const log=logTxt?[{t:Date.now(),txt:logTxt},...(byData.log||[])].slice(0,40):(byData.log||[]);
+    setByData({...byData,...patch,log}); // optimistic
+    try{await setDoc(D(BY_DOC),{...patch,log},{merge:true});setErr('');}
+    catch(e){setErr('Save failed — check internet. ('+(e.message||e)+')');}
   }
-  function addCustomLow(){
-    if(!requireName())return;
-    const n=lowCustom.trim();
-    if(!n)return;
-    if(!lowList.find(x=>x.name.toLowerCase()===n.toLowerCase()))
-      saveLow([{id:Date.now().toString(36),name:n,vend:'',by:authed,at:nowStamp()},...lowList]);
-    setLowCustom('');
+  function bySetStatus(id,status){
+    if(!byData)return;
+    const it=(byData.items||[]).find(i=>i.id===id);
+    const items=(byData.items||[]).map(i=>i.id===id?{...i,status,ts:Date.now(),by:byMeIni}:i);
+    byWrite({items},`${byMeIni||'—'} · ${it?it.name:id} → ${status.toUpperCase()}`);
   }
-  const clearLow=(id)=>saveLow(lowList.filter(x=>x.id!==id));
+  function bySetUnit(id,val){
+    if(!byData)return;
+    const u=String(val||'').trim().toLowerCase().slice(0,12);
+    const it=(byData.items||[]).find(i=>i.id===id);
+    if(!it||(it.unit||'')===u)return;
+    byWrite({items:(byData.items||[]).map(x=>x.id===id?{...x,unit:u}:x)},null);
+  }
+  function bySaveCount(){
+    if(!byData)return;
+    const ids=Object.keys(byEntries).filter(k=>byEntries[k]!==''&&!isNaN(+byEntries[k]));
+    if(!ids.length){flash('Nothing entered');return;}
+    const dk=byTodayKey();
+    // Re-check the one-person-per-day guard at SAVE time, not just on render, so two
+    // people counting simultaneously can't both land.
+    const guard=(byData.counts||{})[dk];
+    if(guard&&guard.empId&&guard.empId!==myUid){
+      setErr(`${guard.by||'Someone else'} already counted today — one person per day.`);
+      setByCountMode(false);setByEntries({});return;
+    }
+    const now=Date.now();
+    const items=(byData.items||[]).map(it=>{
+      if(!ids.includes(it.id))return it;
+      const n=Math.max(0,Math.floor(+byEntries[it.id]));
+      return {...it,count:n,cts:now,cby:byMeIni,status:byCountStatus(n,it.status),ts:now,by:byMeIni};
+    });
+    const prev=(byData.counts||{})[dk]||{v:{}};
+    const v={...(prev.v||{})};
+    ids.forEach(id=>{v[id]=Math.max(0,Math.floor(+byEntries[id]));});
+    const counts={...(byData.counts||{}),[dk]:{by:byMeIni,empId:myUid,name:byMeName,ts:now,v}};
+    const keys=Object.keys(counts).sort();
+    if(keys.length>120)keys.slice(0,keys.length-120).forEach(k=>delete counts[k]);
+    const log=[{t:now,txt:`${byMeIni||'—'} · counted ${ids.length} item${ids.length===1?'':'s'}`},...(byData.log||[])].slice(0,40);
+    setByData({...byData,items,counts,log});
+    setDoc(D(BY_DOC),{items,counts,log},{merge:true}).catch(()=>setErr('Save failed — check internet.'));
+    setByEntries({});setByCountMode(false);window.scrollTo(0,0);
+    flash(`Count saved — ${ids.length} item${ids.length===1?'':'s'}`);
+  }
+  // Adding/removing items is a REQUEST — a manager approves it in the Managers Book.
+  function byRequestAdd(cat,name,unit){
+    if(!byData)return;
+    const nm=String(name||'').trim();
+    if(!nm){setErr('Type the item name first.');return;}
+    const u=String(unit||'').trim().toLowerCase().slice(0,12);
+    const dupe=(byData.items||[]).some(i=>i.name.toLowerCase()===nm.toLowerCase()&&i.cat===cat);
+    if(dupe){setErr(`"${nm}" is already on the list.`);return;}
+    const pend=(byData.requests||[]).some(r=>r.type==='add'&&r.name.toLowerCase()===nm.toLowerCase()&&r.cat===cat);
+    if(pend){setErr(`"${nm}" is already waiting for approval.`);return;}
+    setErr('');
+    const req={id:'r'+Date.now().toString(36),type:'add',cat,name:nm,unit:u,
+      by:byMeIni,byId:myUid,byName:byMeName,at:Date.now()};
+    byWrite({requests:[req,...(byData.requests||[])].slice(0,50)},`${byMeIni||'—'} · requested to add ${nm}`);
+    flash('Sent for approval');
+  }
+  function byRequestRemove(id){
+    if(byArmed!==id){
+      setByArmed(id);clearTimeout(byArmT.current);
+      byArmT.current=setTimeout(()=>setByArmed(''),2500);
+      return;
+    }
+    setByArmed('');
+    if(!byData)return;
+    const it=(byData.items||[]).find(i=>i.id===id);
+    if(!it)return;
+    if((byData.requests||[]).some(r=>r.type==='remove'&&r.itemId===id)){setErr('Already waiting for approval.');return;}
+    setErr('');
+    const req={id:'r'+Date.now().toString(36),type:'remove',itemId:id,name:it.name,cat:it.cat,
+      by:byMeIni,byId:myUid,byName:byMeName,at:Date.now()};
+    byWrite({requests:[req,...(byData.requests||[])].slice(0,50)},`${byMeIni||'—'} · requested to remove ${it.name}`);
+    flash('Sent for approval');
+  }
+  function byCancelRequest(rid){
+    if(!byData)return;
+    byWrite({requests:(byData.requests||[]).filter(r=>r.id!==rid)},null);
+    flash('Request cancelled');
+  }
+  function byCopyOrder(){
+    const fmt=(i)=>{const u=i.unit?' '+i.unit:'';
+      return `- ${i.name} (${byCatLabel(i.cat)}) — ${i.count!=null?`${i.count}${u} on hand`:'not counted'}`;};
+    const out=(byData?.items||[]).filter(i=>i.status==='out');
+    const low=(byData?.items||[]).filter(i=>i.status==='low');
+    const d=new Date();
+    let txt=`BACKYARD ORDER — ASTORIA — ${d.getMonth()+1}/${d.getDate()}\n`;
+    if(out.length)txt+=`\nOUT:\n`+out.map(fmt).join('\n');
+    if(low.length)txt+=`\n\nLOW:\n`+low.map(fmt).join('\n');
+    const done=()=>flash('List copied');
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,()=>flash('Copy failed'));
+    else{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();
+      try{document.execCommand('copy');done();}catch(e){flash('Copy failed');}ta.remove();}
+  }
 
   // ---- schedule ----
   const saveAvail=(byEmp)=>write(`avail_${store}_${monday}`,{byEmp});
@@ -608,7 +826,7 @@ function App(){
             <button class="arrow" onClick=${()=>setMonday(shiftMonday(monday,1))}>›</button>
           </div>`}
         <div class="tabs">
-          ${[['week','Schedule'],['avail','My availability'],['inv','Invoices'],['low','Running low'],['idea','Comments'],['game','Game']].map(([id,label])=>html`
+          ${[['week','Schedule'],['avail','My availability'],['inv','Invoices'],['backyard','Backyard'],['idea','Comments'],['game','Game']].map(([id,label])=>html`
             <button class=${tab===id?'on':''} onClick=${()=>setTab(id)}>${label}</button>`)}
         </div>
       </div>
@@ -634,33 +852,219 @@ function App(){
       </div>
     <//>`;
 
-  // ---- tab: running low ----
-  const lowTab=html`
+  // ---- tab: backyard ----
+  const byItems=(byData&&byData.items)||[];
+  const byCounts=(byData&&byData.counts)||{};
+  const byWk=byWeekKeys();
+  const byTk=byTodayKey();
+  const byTodayEntry=byCounts[byTk];
+  const byLockedOut=!!(byTodayEntry&&byTodayEntry.empId&&byTodayEntry.empId!==myUid);
+  const byDoneIds=new Set(byWk.map(k=>(byCounts[k]||{}).empId).filter(Boolean));
+  const byRemaining=(byRoster||[]).filter(e=>!byDoneIds.has(e.id)).map(e=>e.name);
+  const byEntered=Object.keys(byEntries).filter(k=>byEntries[k]!=='').length;
+  const bySetE=(id,v)=>setByEntries({...byEntries,[id]:v.replace(/[^0-9]/g,'').slice(0,4)});
+  const byNeed=byItems.filter(i=>i.status!=='good').length;
+
+  const byStockView=html`
     <${Fragment}>
-      <div style="font-size:14.5px;line-height:1.5;margin:0 2px 12px">
-        Running low on something? <b>Tap it.</b> Tap again if you made a mistake. The ordering team sees it instantly.
+      <div class="by-srow">
+        <input class="by-search" placeholder="Search items" value=${byQ} onInput=${e=>setByQ(e.target.value)} />
+        <button class="by-mode" onClick=${()=>{if(byCountMode){setByCountMode(false);setByEntries({});}else setByCountMode(true);}}>
+          ${byCountMode?html`<${IcStock}/>`:html`<${IcCount}/>COUNT`}
+        </button>
       </div>
-      ${['PAPER GOODS','DRINKS'].map(cat=>html`
-        <div class="lbl mt10" key=${cat}>${cat}</div>
-        ${LOW_CATALOG.filter(c=>c.cat===cat).map(c=>{
-          const flagged=lowList.find(x=>x.name===c.n);
-          return html`
-            <button class="pick" style=${flagged?{borderColor:'var(--tomato)',background:'#FBEFEC'}:{}} key=${c.n} onClick=${()=>toggleLow(c.n,c.vend)}>
-              <div class="ico">${emojiFor(c.n)}</div>
-              <div class="nm">${c.n}<div class="pr">${c.vend}</div></div>
-              ${flagged?html`<span class="pill" style="background:var(--tomato)">LOW ✓</span>`:html`<span class="plus">＋</span>`}
-            </button>`;})}
-      `)}
-      <div class="row mt10">
-        <input style="flex:2" placeholder="Something else running low? Type it" value=${lowCustom} onInput=${e=>setLowCustom(e.target.value)} onKeyDown=${e=>{if(e.key==='Enter')addCustomLow();}} />
-        <button class="btn blue" onClick=${addCustomLow}>Flag it</button>
+      ${byCountMode&&html`
+        <${Fragment}>
+          <div class="by-chead">
+            <div class="l">DAILY COUNT — ${BY_WK[(new Date().getDay()+6)%7]} ${new Date().getMonth()+1}/${new Date().getDate()}</div>
+            <div class="r">${byEntered}/${byItems.length} entered<br/>counting as ${byMeIni}</div>
+          </div>
+          <div class="by-wk">
+            <div class="by-wkt">THIS WEEK — ONE COUNT PER DAY, EVERYONE ONCE A WEEK</div>
+            <div class="by-wkg">
+              ${byWk.map((k,i)=>{
+                const who=(byCounts[k]||{}).by||'';
+                return html`
+                  <div class=${'by-wkc'+(who?' done':'')+(k===byTk?' today':'')} key=${k}>
+                    <div class="d">${BY_WK[i]}</div>
+                    <div class="w">${who}</div>
+                  </div>`;
+              })}
+            </div>
+            ${byRoster===null?html`<div class="by-wkn mut">Loading the roster…</div>`
+              :!byRoster.length?html`<div class="by-wkn mut">No cashier/expo staff on the Astoria roster yet.</div>`
+              :byRemaining.length?html`<div class="by-wkn warn">STILL TO COUNT: ${byRemaining.join(', ')}</div>`
+              :html`<div class="by-wkn ok">EVERYONE COUNTED THIS WEEK</div>`}
+          </div>
+          ${byLockedOut&&html`<div class="by-ban">${byTodayEntry.name||byTodayEntry.by} already counted today — one person per day.</div>`}
+        <//>`}
+      ${BY_CATS.map(c=>{
+        const ql=byQ.trim().toLowerCase();
+        let list=byItems.filter(i=>i.cat===c.id).sort((a,b)=>(a.ord||0)-(b.ord||0));
+        if(ql)list=list.filter(i=>i.name.toLowerCase().includes(ql));
+        if(!list.length)return null;
+        const need=list.filter(i=>i.status!=='good').length;
+        return html`
+          <div class="by-cat" key=${c.id}>
+            <div class="by-cath">
+              <span class="nme">${c.label}</span>
+              ${!byCountMode&&need>0&&html`<span class="need">${need} TO ORDER</span>`}
+            </div>
+            <div class="by-card">
+              ${list.map(it=>{
+                const u=it.unit?' '+it.unit:'';
+                const meta=byCountMode
+                  ?(it.count!=null?`last: ${it.count}${u}${it.cts?` · ${byRel(it.cts)}`:''}${it.cby?` · ${it.cby}`:''}`:'')
+                  :[it.count!=null?`${it.count}${u} on hand`:null,
+                    it.ts&&it.by?`${byRel(it.ts)} · ${it.by}`:null].filter(Boolean).join(' · ');
+                return html`
+                  <div class="by-row" key=${it.id}>
+                    <div style="min-width:0">
+                      <div class="by-nm">${it.name}</div>
+                      ${meta&&html`<div class="by-meta">${meta}</div>`}
+                    </div>
+                    ${byCountMode?html`
+                      <div class="by-ccol">
+                        <input class="by-cin" type="text" inputmode="numeric" pattern="[0-9]*"
+                          value=${byEntries[it.id]??''}
+                          placeholder=${it.count==null?'—':String(it.count)}
+                          onInput=${e=>bySetE(it.id,e.target.value)} />
+                        ${byUnitEdit===it.id?html`
+                          <input class="by-uin" value=${it.unit||''} placeholder="unit"
+                            ref=${el=>{if(el&&document.activeElement!==el)el.focus();}}
+                            onBlur=${e=>{bySetUnit(it.id,e.target.value);setByUnitEdit('');}}
+                            onKeyDown=${e=>{if(e.key==='Enter')e.target.blur();}} />`
+                        :html`
+                          <button class="by-unit" onClick=${()=>setByUnitEdit(it.id)}>
+                            ${it.unit?it.unit.toUpperCase():'SET UNIT'}
+                          </button>`}
+                      </div>`
+                    :html`
+                      <div class="by-seg">
+                        <button class=${it.status==='good'?'g-on':''} onClick=${()=>bySetStatus(it.id,'good')}>GOOD</button>
+                        <button class=${it.status==='low'?'l-on':''} onClick=${()=>bySetStatus(it.id,'low')}>LOW</button>
+                        <button class=${it.status==='out'?'o-on':''} onClick=${()=>bySetStatus(it.id,'out')}>OUT</button>
+                      </div>`}
+                  </div>`;
+              })}
+            </div>
+          </div>`;
+      })}
+      ${byCountMode&&byEntered>0&&!byLockedOut&&html`
+        <button class="by-save" onClick=${bySaveCount}>SAVE COUNT (${byEntered} ${byEntered===1?'ITEM':'ITEMS'})</button>`}
+    <//>`;
+
+  const byOrderView=(()=>{
+    const out=byItems.filter(i=>i.status==='out');
+    const low=byItems.filter(i=>i.status==='low');
+    if(!out.length&&!low.length)return html`
+      <div class="by-empty">
+        <div class="big">FULLY STOCKED</div>
+        <div>Nothing to order. Items marked LOW or OUT (by hand or by a zero count) show up here.</div>
+      </div>`;
+    const sub=(it)=>{const u=it.unit?' '+it.unit:'';
+      return `${byCatLabel(it.cat)} · ${it.count!=null?`${it.count}${u} on hand`:'not counted'}`;};
+    const section=(list,cls,label)=>list.length?html`
+      <div style="margin-bottom:20px">
+        <div class=${'by-oh '+cls}>${label}</div>
+        <div class="by-card">
+          ${list.map(it=>html`
+            <div class="by-row" key=${it.id}>
+              <div style="min-width:0">
+                <div class="by-nm">${it.name}</div>
+                <div class="by-meta">${sub(it)}</div>
+              </div>
+              <button class="by-restock" onClick=${()=>bySetStatus(it.id,'good')}>RESTOCKED</button>
+            </div>`)}
+        </div>
+      </div>`:null;
+    return html`
+      <${Fragment}>
+        <button class="by-copy" onClick=${byCopyOrder}>COPY ORDER LIST</button>
+        ${section(out,'out','OUT NOW')}
+        ${section(low,'low','RUNNING LOW')}
+      <//>`;
+  })();
+
+  const byReqs=(byData&&byData.requests)||[];
+  const byPendingRemove=new Set(byReqs.filter(r=>r.type==='remove').map(r=>r.itemId));
+  const byEditView=html`
+    <${Fragment}>
+      <div class="by-sec">REQUEST A NEW ITEM</div>
+      <div class="by-note">Adds and removals need a manager's OK. Your request shows up in the Managers Book.</div>
+      <div class="by-addf">
+        <select value=${byAdd.cat} onChange=${e=>setByAdd({...byAdd,cat:e.target.value})}>
+          ${BY_CATS.map(c=>html`<option value=${c.id} key=${c.id}>${c.label}</option>`)}
+        </select>
+        <input placeholder="Item name" value=${byAdd.name} onInput=${e=>setByAdd({...byAdd,name:e.target.value})}
+          onKeyDown=${e=>{if(e.key==='Enter'){byRequestAdd(byAdd.cat,byAdd.name,byAdd.unit);setByAdd({...byAdd,name:'',unit:''});}}} />
+        <input placeholder="Unit — cases, sleeves, rolls… (optional)" value=${byAdd.unit} onInput=${e=>setByAdd({...byAdd,unit:e.target.value})}
+          onKeyDown=${e=>{if(e.key==='Enter'){byRequestAdd(byAdd.cat,byAdd.name,byAdd.unit);setByAdd({...byAdd,name:'',unit:''});}}} />
+        <button class="by-btn" onClick=${()=>{byRequestAdd(byAdd.cat,byAdd.name,byAdd.unit);setByAdd({...byAdd,name:'',unit:''});}}>SEND FOR APPROVAL</button>
       </div>
-      ${lowList.filter(x=>!LOW_CATALOG.some(c=>c.n===x.name)).map(x=>html`
-        <button class="pick" style="border-color:var(--tomato);background:#FBEFEC" key=${x.id} onClick=${()=>clearLow(x.id)}>
-          <div class="ico">${emojiFor(x.name)}</div>
-          <div class="nm">${x.name}<div class="pr">flagged by ${x.by}</div></div>
-          <span class="pill" style="background:var(--tomato)">LOW ✓</span>
-        </button>`)}
+
+      ${byReqs.length>0&&html`
+        <${Fragment}>
+          <div class="by-sec">WAITING ON A MANAGER (${byReqs.length})</div>
+          <div class="by-card" style="margin-bottom:20px">
+            ${byReqs.map(r=>html`
+              <div class="by-row" key=${r.id}>
+                <div style="min-width:0">
+                  <div class="by-nm">${r.type==='add'?'Add':'Remove'} — ${r.name}</div>
+                  <div class="by-meta">${byCatLabel(r.cat)} · ${r.by||'—'} · ${byRel(r.at)}</div>
+                </div>
+                <span class="by-pend">PENDING</span>
+                ${r.byId===myUid&&html`<button class="by-rm" onClick=${()=>byCancelRequest(r.id)}>CANCEL</button>`}
+              </div>`)}
+          </div>
+        <//>`}
+
+      <div class="by-sec">REQUEST A REMOVAL</div>
+      ${BY_CATS.map(c=>{
+        const list=byItems.filter(i=>i.cat===c.id).sort((a,b)=>(a.ord||0)-(b.ord||0));
+        if(!list.length)return null;
+        return html`
+          <div class="by-cat" key=${c.id}>
+            <div class="by-cath"><span class="nme" style="font-size:12px">${c.label}</span></div>
+            <div class="by-card">
+              ${list.map(it=>{
+                const pending=byPendingRemove.has(it.id);
+                return html`
+                  <div class="by-row" key=${it.id}>
+                    <div class="by-nm" style="min-width:0">${it.name}</div>
+                    ${pending
+                      ?html`<span class="by-pend">PENDING</span>`
+                      :html`<button class=${'by-rm'+(byArmed===it.id?' armed':'')} onClick=${()=>byRequestRemove(it.id)}>
+                        ${byArmed===it.id?'TAP AGAIN':'REMOVE'}
+                      </button>`}
+                  </div>`;
+              })}
+            </div>
+          </div>`;
+      })}
+
+      <div class="by-sec">RECENT ACTIVITY</div>
+      <div class="by-log">
+        ${((byData&&byData.log)||[]).slice(0,25).map((l,i)=>html`
+          <div class="by-logr" key=${i}>
+            <div>${l.txt}</div>
+            <div class="t">${byRel(l.t)}</div>
+          </div>`)}
+        ${!((byData&&byData.log)||[]).length&&html`<div class="by-logr" style="color:var(--faint)">No activity yet.</div>`}
+      </div>
+    <//>`;
+
+  const backyardTab=html`
+    <${Fragment}>
+      ${store!=='astoria'&&html`<div class="by-ban" style="background:#EEF2F7;border-color:var(--line);color:var(--faint)">The backyard is Astoria only — showing Astoria.</div>`}
+      <div class="by-sub">
+        ${[['stock','STOCK'],['order',byNeed>0?`ORDER (${byNeed})`:'ORDER'],['edit','EDIT']].map(([id,label])=>html`
+          <button class=${byTab===id?'on':''} key=${id} onClick=${()=>{setByTab(id);window.scrollTo(0,0);}}>${label}</button>`)}
+      </div>
+      ${byData===null?html`<div class="center">Loading the backyard list…</div>`
+        :byTab==='stock'?byStockView
+        :byTab==='order'?byOrderView
+        :byEditView}
     <//>`;
 
   // ---- tab: availability ----
@@ -864,7 +1268,7 @@ function App(){
       <div class="wrap">
         ${connected===false&&html`<div class="banner err"><b>Can't reach the database.</b> Check your internet connection.</div>`}
         ${err&&html`<div class="banner err">${err}</div>`}
-        ${tab==='inv'?invTab:tab==='low'?lowTab:tab==='avail'?availTab:tab==='game'?gameTab:tab==='idea'?ideaTab:weekTab}
+        ${tab==='inv'?invTab:tab==='backyard'?backyardTab:tab==='avail'?availTab:tab==='game'?gameTab:tab==='idea'?ideaTab:weekTab}
       </div>
       ${storeSignal}
       ${toast&&html`<div class="toast">${toast}</div>`}
