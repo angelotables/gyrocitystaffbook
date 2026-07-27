@@ -426,6 +426,7 @@ function App(){
   const [byCountMode,setByCountMode]=useState(false);
   const [byEntries,setByEntries]=useState({});
   const [byArmed,setByArmed]=useState('');
+  const [byErr,setByErr]=useState('');   // backyard-only problem; never the global connection banner
   const [byUnitEdit,setByUnitEdit]=useState('');
   const [byAdd,setByAdd]=useState({cat:'branded',name:'',unit:''});
   const [byRoster,setByRoster]=useState(null); // Astoria cashier/expo — the weekly-count roster
@@ -487,13 +488,16 @@ function App(){
   useEffect(()=>{
     if(!authed)return;
     const ub=onSnapshot(D(BY_DOC),(s)=>{
-      setConnected(true);
+      setByErr('');
       if(s.exists())setByData(s.data());
       else if(!bySeeded.current){
         bySeeded.current=true;
-        setDoc(D(BY_DOC),{items:bySeedItems(),log:[],counts:{}}).catch(()=>setErr('Could not set up the backyard list.'));
+        setDoc(D(BY_DOC),{items:bySeedItems(),log:[],counts:{}})
+          .catch(()=>setByErr("Couldn't set up the backyard list — a manager may need to publish the database rules."));
       }
-    },()=>setConnected(false));
+    },()=>setByErr("Can't load the backyard list — a manager may need to publish the database rules."));
+    // NOTE: this listener never touches `connected` — a problem here must not make
+    // the whole Staff Book look offline.
     const ur=onSnapshot(D('emp_astoria'),(s)=>{
       const list=s.exists()?(s.data().list||[]):SEED;
       setByRoster(list.filter(e=>e&&(e.role==='cashier'||e.role==='expo')));
@@ -1061,7 +1065,8 @@ function App(){
         ${[['stock','STOCK'],['order',byNeed>0?`ORDER (${byNeed})`:'ORDER'],['edit','EDIT']].map(([id,label])=>html`
           <button class=${byTab===id?'on':''} key=${id} onClick=${()=>{setByTab(id);window.scrollTo(0,0);}}>${label}</button>`)}
       </div>
-      ${byData===null?html`<div class="center">Loading the backyard list…</div>`
+      ${byErr?html`<div class="banner err">${byErr}</div>`
+        :byData===null?html`<div class="center">Loading the backyard list…</div>`
         :byTab==='stock'?byStockView
         :byTab==='order'?byOrderView
         :byEditView}
