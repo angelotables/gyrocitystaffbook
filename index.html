@@ -308,6 +308,9 @@ const D = (key) => doc(db, 'gyrocity', key);
 // Invoices: one document per invoice (subcollection). Uploading only needs create
 // access — staff never read the invoice list back (that stays Orders/Owner/Manager).
 const invItemDoc = (store, id) => doc(db, 'gyrocity', 'inv_' + store, 'items', id);
+// Foodies: office books them from the mini-link; the floor reads + validates here.
+const foodieCol = () => collection(db, 'gyrocity', 'foodies', 'items');
+const foodieDoc = (id) => doc(db, 'gyrocity', 'foodies', 'items', id);
 const _auth = getAuth(fb);
 const FN_URL = 'https://staff-583218261960.us-east4.run.app';
 const STAFF_EMAIL = (empId) => empId + '@staff.gyrocity.app';
@@ -419,6 +422,9 @@ function App(){
   const loopRef=useRef(null);
   // invoices
   const [invoices,setInvoices]=useState([]);
+  // foodies (booked by the office, validated here)
+  const [foodies,setFoodies]=useState(null);
+  const [foodieArm,setFoodieArm]=useState('');   // two-tap confirm: 'noshow:<id>' | 'undo:<id>'
   const [uploading,setUploading]=useState(false);
   // running low
   // backyard
@@ -512,11 +518,28 @@ function App(){
     const u5=onSnapshot(D(`avail_${store}_${monday}`),(s)=>{setAvail(s.exists()?(s.data().byEmp||{}):{});},()=>setConnected(false));
     return ()=>{u4();u5();};
   },[store,monday,authed]);
+  // Foodies are company-wide; the tab filters to the picked store. One listener for both.
+  useEffect(()=>{
+    if(!authed)return;
+    const uf=onSnapshot(foodieCol(),(snap)=>{setFoodies(snap.docs.map(d=>({id:d.id,...d.data()})));},()=>setFoodies([]));
+    return ()=>uf();
+  },[authed]);
 
   async function write(key,data){
     try{await setDoc(D(key),data);setErr('');flash('Saved ✓');}
     catch(e){setErr('Save failed — check internet. ('+(e.message||e)+')');}
   }
+  // ---- foodie validation (floor can check in / flag, not create or edit) ----
+  async function foodieMerge(id,patch,okMsg){
+    try{await setDoc(foodieDoc(id),patch,{merge:true});setErr('');flash(okMsg||'Saved ✓');}
+    catch(e){setErr('Save failed — check internet. ('+(e.message||e)+')');}
+  }
+  function foodieCheckIn(id){setFoodieArm('');foodieMerge(id,{status:'arrived',checkedBy:authed,checkedAt:nowStamp()},'Checked in ✓');}
+  function foodieNoShow(id){
+    if(foodieArm!=='noshow:'+id){setFoodieArm('noshow:'+id);return;}
+    foodieMerge(id,{status:'noshow',checkedBy:authed,checkedAt:nowStamp()},'Marked no-show');
+  }
+  function foodieReset(id){setFoodieArm('');foodieMerge(id,{status:'booked',checkedBy:null,checkedAt:null},'Reset');}
   function requireName(){return true;}
   const idForName=(name)=>((emp||SEED).find(e=>e.name===name)||{}).id;
   function pressKey(k){
@@ -818,12 +841,62 @@ function App(){
             <button class="arrow" onClick=${()=>setMonday(shiftMonday(monday,1))}>›</button>
           </div>`}
         <div class="tabs">
-          ${[['week','Schedule'],['avail','My availability'],['inv','Invoices'],['backyard','Backyard'],['idea','Comments'],['game','Game']].map(([id,label])=>html`
+          ${[['week','Schedule'],['avail','My availability'],['foodie','Foodie'],['inv','Invoices'],['backyard','Backyard'],['idea','Comments'],['game','Game']].map(([id,label])=>html`
             <button class=${tab===id?'on':''} onClick=${()=>setTab(id)}>${label}</button>`)}
         </div>
       </div>
       <div class="meander"></div>
     </div>`;
+
+  // ---- tab: foodie ----
+  const F_ST={booked:{label:'BOOKED',color:'var(--olive)'},arrived:{label:'HERE ✓',color:'var(--green)'},noshow:{label:'NO-SHOW',color:'var(--tomato)'}};
+  const fDay=(d)=>{if(!d)return '';const [y,m,dd]=d.split('-').map(Number);return new Date(y,m-1,dd).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});};
+  const fTime=(t)=>{if(!t)return '';const [H,M]=t.split(':');let h=+H;const ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+M+' '+ap;};
+  const fMine=(foodies||[]).filter(f=>f.store===store);
+  const fSort=(a,b)=>((a.date||'')+(a.time||'')).localeCompare((b.date||'')+(b.time||''));
+  const fToday=fMine.filter(f=>f.date===today).sort(fSort);
+  const fUpcoming=fMine.filter(f=>f.date>today).sort(fSort);
+  const foodieCard=(f)=>{const st=F_ST[f.status]||F_ST.booked;return html`
+    <div class="card" style=${{borderLeft:'4px solid '+st.color,padding:'14px 15px'}} key=${f.id}>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+        <div style="min-width:0">
+          <b style="font-size:16px">${f.name}</b>
+          ${f.handle?html`<div style="font-size:13px;color:var(--blue);margin-top:1px">@${f.handle}</div>`:''}
+        </div>
+        <span class="pill" style=${{background:st.color}}>${st.label}</span>
+      </div>
+      <div style="margin-top:8px;font-size:13.5px;color:var(--faint)">
+        ${fDay(f.date)}${f.time?' · '+fTime(f.time):''}
+      </div>
+      ${f.notes?html`<div style="margin-top:8px;font-size:14px;line-height:1.5;white-space:pre-wrap">${f.notes}</div>`:''}
+      ${f.status==='arrived'?html`
+        <div style="margin-top:10px;font-size:12.5px;color:var(--green)">Checked in${f.checkedBy?' by '+f.checkedBy:''}${f.checkedAt?' · '+f.checkedAt:''}</div>
+        <div style="margin-top:8px"><button class="ghost" onClick=${()=>foodieReset(f.id)}>Undo</button></div>
+      `:f.status==='noshow'?html`
+        <div style="margin-top:10px;font-size:12.5px;color:var(--tomato)">Marked no-show${f.checkedBy?' by '+f.checkedBy:''}</div>
+        <div style="margin-top:8px"><button class="ghost" onClick=${()=>foodieReset(f.id)}>Undo</button></div>
+      `:html`
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" style="flex:1;background:linear-gradient(135deg,var(--green),#2f9e63)" onClick=${()=>foodieCheckIn(f.id)}>✓ They're here</button>
+          ${foodieArm==='noshow:'+f.id
+            ?html`<button class="btn" style="flex:0 0 auto;background:var(--tomato)" onClick=${()=>foodieNoShow(f.id)}>Confirm no-show</button>`
+            :html`<button class="btn" style="flex:0 0 auto;background:none;color:var(--faint);border:1.5px solid var(--line);box-shadow:none" onClick=${()=>foodieNoShow(f.id)}>No-show</button>`}
+        </div>`}
+    </div>`;};
+  const foodieTab=html`
+    <${Fragment}>
+      <div class="card" style="padding:13px 15px;background:linear-gradient(160deg,#0E2A47,#17395C);color:#EAF1F8;border:none">
+        <div style="font-size:14.5px;line-height:1.5">Foodies the office booked for <b>${STORES.find(s=>s.id===store).label}</b>. When one comes in, check the app and tap <b>They're here</b> to validate — no need to wait for a text.</div>
+      </div>
+      ${foodies===null?html`<div class="muted" style="text-align:center;padding:22px 0">Loading foodies…</div>`:html`
+        <${Fragment}>
+          <div class="lbl" style="margin:4px 2px 10px">TODAY — ${fDay(today)}</div>
+          ${fToday.length?fToday.map(foodieCard):html`<div class="muted" style="text-align:center;padding:16px 0 22px">No foodies booked for today at ${STORES.find(s=>s.id===store).label}.</div>`}
+          ${fUpcoming.length>0&&html`
+            <div class="lbl" style="margin:18px 2px 10px">COMING UP (${fUpcoming.length})</div>
+            ${fUpcoming.map(foodieCard)}`}
+        <//>`}
+    <//>`;
 
   // ---- tab: invoices ----
   const myToday=Number(localStorage.getItem('gc-staff-inv-'+store+'-'+today))||0;
@@ -1227,7 +1300,7 @@ function App(){
       <div class="wrap">
         ${connected===false&&html`<div class="banner err"><b>Can't reach the database.</b> Check your internet connection.</div>`}
         ${err&&html`<div class="banner err">${err}</div>`}
-        ${tab==='inv'?invTab:tab==='backyard'?backyardTab:tab==='avail'?availTab:tab==='game'?gameTab:tab==='idea'?ideaTab:weekTab}
+        ${tab==='foodie'?foodieTab:tab==='inv'?invTab:tab==='backyard'?backyardTab:tab==='avail'?availTab:tab==='game'?gameTab:tab==='idea'?ideaTab:weekTab}
       </div>
       ${storeSignal}
       ${toast&&html`<div class="toast">${toast}</div>`}
