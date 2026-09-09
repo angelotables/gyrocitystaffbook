@@ -917,7 +917,7 @@ function App(){
   const F_ST={booked:{label:'BOOKED',color:'var(--olive)'},arrived:{label:'HERE ✓',color:'var(--green)'},noshow:{label:'NO-SHOW',color:'var(--tomato)'}};
   const fDay=(d)=>{if(!d)return '';const [y,m,dd]=d.split('-').map(Number);return new Date(y,m-1,dd).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});};
   const fTime=(t)=>{if(!t)return '';const [H,M]=t.split(':');let h=+H;const ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+M+' '+ap;};
-  const fMine=(foodies||[]).filter(f=>f.store===store);
+  const fMine=(foodies||[]).filter(f=>f.store===store&&f.status!=='cancelled');
   const fSort=(a,b)=>((a.date||'')+(a.time||'')).localeCompare((b.date||'')+(b.time||''));
   const fToday=fMine.filter(f=>f.date===today).sort(fSort);
   const fUpcoming=fMine.filter(f=>f.date>today).sort(fSort);
