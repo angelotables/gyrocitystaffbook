@@ -134,6 +134,17 @@
   @keyframes pop{from{opacity:0;transform:translate(-50%,14px) scale(.9)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
   .muted{color:var(--faint);font-size:13.5px;line-height:1.55}
   .center{text-align:center;color:var(--faint);font-size:14.5px;padding:18px 0;line-height:1.6}
+  .vd-pick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+  .vd-pick button{flex:1;min-width:92px;border:1.5px solid var(--line);background:#FBFAF6;border-radius:12px;padding:12px 8px;
+    font-size:14.5px;font-weight:700;color:var(--ink);cursor:pointer;font-family:inherit;text-align:center;transition:all .15s}
+  .vd-pick button.on{background:linear-gradient(135deg,var(--navy),var(--blue));border-color:transparent;color:#fff}
+  .vd-file{display:block;text-align:center;border:1.5px dashed #CFD5DD;background:#FBFAF6;border-radius:13px;padding:15px;
+    font-weight:700;color:var(--navy);cursor:pointer;font-size:14.5px}
+  .vd-shots{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .vd-tw{position:relative;display:inline-block;line-height:0}
+  .vd-tw img{width:68px;height:68px;object-fit:cover;border-radius:11px;border:1px solid var(--line)}
+  .vd-tw .x{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--tomato);
+    color:#fff;border:none;font-size:12px;line-height:1;cursor:pointer;padding:0}
   .pick{display:flex;width:100%;align-items:center;gap:13px;background:var(--card);border:1.5px solid var(--line);border-radius:16px;
     padding:11px 13px;margin-bottom:9px;cursor:pointer;text-align:left;font-family:inherit;font-size:inherit;
     box-shadow:var(--shadow);transition:all .18s}
@@ -308,6 +319,14 @@ const D = (key) => doc(db, 'gyrocity', key);
 // Invoices: one document per invoice (subcollection). Uploading only needs create
 // access — staff never read the invoice list back (that stays Orders/Owner/Manager).
 const invItemDoc = (store, id) => doc(db, 'gyrocity', 'inv_' + store, 'items', id);
+const refItemDoc = (id) => doc(db, 'gyrocity', 'refunds', 'items', id);
+const PLATFORMS = [
+  { id:'uber', label:'UberEats', c:'#0B7A3E' },
+  { id:'doordash', label:'DoorDash', c:'#C4321E' },
+  { id:'grubhub', label:'Grubhub', c:'#B4610C' },
+  { id:'other', label:'Other', c:'#5C6670' },
+];
+const vdNum = (v) => { const n=parseFloat(String(v==null?'':v).replace(/[^0-9.\-]/g,'')); return isFinite(n)?n:0; };
 // Foodies: office books them from the mini-link; the floor reads + validates here.
 const foodieCol = () => collection(db, 'gyrocity', 'foodies', 'items');
 const foodieDoc = (id) => doc(db, 'gyrocity', 'foodies', 'items', id);
@@ -426,6 +445,11 @@ function App(){
   const [foodies,setFoodies]=useState(null);
   const [foodieArm,setFoodieArm]=useState('');   // two-tap confirm: 'noshow:<id>' | 'undo:<id>'
   const [uploading,setUploading]=useState(false);
+  const [vdOpen,setVdOpen]=useState(false);
+  const [vdDraft,setVdDraft]=useState({platform:'',order:'',amount:'',notes:''});
+  const [vdShots,setVdShots]=useState([]);
+  const [vdBusy,setVdBusy]=useState(false);
+  const [vdProg,setVdProg]=useState('');
   // running low
   // backyard
   const [byData,setByData]=useState(null);
@@ -624,6 +648,47 @@ function App(){
       flash('Invoice uploaded ✓');
     }catch(e){setErr('Upload failed. ('+(e.message||e)+')');}
     setUploading(false);
+  }
+
+
+  // ---- voided delivery orders (refund claims) ----
+  async function vdAddShots(files){
+    if(!files||!files.length)return;
+    setErr('');
+    try{
+      const out=[];
+      for(const file of Array.from(files).slice(0,4)){
+        const blob=await compressImage(file);
+        out.push({blob,url:URL.createObjectURL(blob)});
+      }
+      setVdShots(prev=>[...prev,...out].slice(0,4));
+    }catch(e){ setErr(e.message||'Could not read that photo.'); }
+  }
+  async function vdSend(){
+    if(!vdDraft.platform){setErr('Which app was it?');return;}
+    if(vdNum(vdDraft.amount)<=0){setErr('Add how much they took back.');return;}
+    if(!vdShots.length){setErr('Add a photo of the receipt.');return;}
+    setErr('');setVdBusy(true);
+    try{
+      const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+      const urls=[];
+      for(let i=0;i<vdShots.length;i++){
+        setVdProg('Uploading photo '+(i+1)+' of '+vdShots.length+'…');
+        const path=sref(storage,'refunds/'+store+'/'+id+'-'+i+'.jpg');
+        await uploadBytes(path,vdShots[i].blob,{contentType:'image/jpeg'});
+        urls.push(await getDownloadURL(path));
+      }
+      setVdProg('Sending…');
+      await setDoc(refItemDoc(id),{id,platform:vdDraft.platform,store,order:vdDraft.order.trim(),
+        orderDate:today,amount:vdNum(vdDraft.amount),photos:urls,notes:vdDraft.notes.trim(),
+        by:authed||'Staff',status:'open',recovered:0,at:new Date().toISOString()});
+      vdShots.forEach(x=>{try{URL.revokeObjectURL(x.url)}catch(e){}});
+      const k='gc-staff-void-'+store+'-'+today;
+      localStorage.setItem(k,String((Number(localStorage.getItem(k))||0)+1));
+      setVdShots([]);setVdDraft({platform:'',order:'',amount:'',notes:''});setVdOpen(false);
+      flash('Sent to the office ✓');
+    }catch(e){ setErr('Could not send it. ('+(e.message||e)+')'); }
+    setVdProg('');setVdBusy(false);
   }
 
   // ---- backyard actions ----
@@ -841,7 +906,7 @@ function App(){
             <button class="arrow" onClick=${()=>setMonday(shiftMonday(monday,1))}>›</button>
           </div>`}
         <div class="tabs">
-          ${[['week','Schedule'],['avail','My availability'],['foodie','Foodie'],['inv','Invoices'],['backyard','Backyard'],['idea','Comments'],['game','Game']].map(([id,label])=>html`
+          ${[['week','Schedule'],['avail','My availability'],['foodie','Foodie'],['inv','Uploads'],['backyard','Backyard'],['idea','Comments'],['game','Game']].map(([id,label])=>html`
             <button class=${tab===id?'on':''} onClick=${()=>setTab(id)}>${label}</button>`)}
         </div>
       </div>
@@ -900,6 +965,7 @@ function App(){
 
   // ---- tab: invoices ----
   const myToday=Number(localStorage.getItem('gc-staff-inv-'+store+'-'+today))||0;
+  const myVoids=Number(localStorage.getItem('gc-staff-void-'+store+'-'+today))||0;
   const invTab=html`
     <${Fragment}>
       <div class="card" style="text-align:center;padding:22px 16px">
@@ -910,11 +976,55 @@ function App(){
           <input type="file" accept="image/*" capture="environment" style="display:none" disabled=${uploading} onChange=${e=>{const f=e.target.files[0];if(f)uploadInvoice(f);e.target.value='';}} />
         </label>
       </div>
-      <div class="center" style="padding:8px 0">
+      <div class="center" style="padding:8px 0 18px">
         ${myToday>0
           ?html`You uploaded <b>${myToday}</b> invoice${myToday===1?'':'s'} today ✓`
           :'Snap every invoice the moment the driver hands it over.'}
       </div>
+
+      ${!vdOpen&&html`
+        <div class="card" style="text-align:center;padding:22px 16px">
+          <div style="font-size:16px;font-weight:700;margin-bottom:4px">Did a delivery app void an order?</div>
+          <div class="muted mb10">If they took the money back on food we already made and sent out, send it in — the office calls and gets the credit.</div>
+          <button class="btn olive wide" onClick=${()=>{setVdOpen(true);setErr('');}}>REPORT A VOIDED ORDER</button>
+          ${myVoids>0&&html`<div class="center" style="padding:12px 0 0">You sent in <b>${myVoids}</b> today ✓</div>`}
+        </div>`}
+
+      ${vdOpen&&html`
+        <div class="card">
+          <div class="lbl">WHICH APP</div>
+          <div class="vd-pick">${PLATFORMS.map(pf=>html`
+            <button class=${vdDraft.platform===pf.id?'on':''} key=${pf.id}
+              onClick=${()=>setVdDraft(prev=>({...prev,platform:pf.id}))}>${pf.label}</button>`)}</div>
+
+          <div class="lbl" style="margin-top:16px">HOW MUCH DID THEY TAKE?</div>
+          <input inputmode="decimal" placeholder="42.75" value=${vdDraft.amount}
+            onInput=${e=>setVdDraft(prev=>({...prev,amount:e.target.value}))} />
+
+          <div class="lbl" style="margin-top:16px">ORDER #</div>
+          <input placeholder="Off the receipt (optional)" value=${vdDraft.order}
+            onInput=${e=>setVdDraft(prev=>({...prev,order:e.target.value}))} />
+
+          <div class="lbl" style="margin-top:16px">PHOTO OF THE RECEIPT</div>
+          <label class="vd-file">
+            ${vdShots.length?'Add another photo':'📷  Take a photo of the voided receipt'}
+            <input type="file" accept="image/*" multiple style="display:none"
+              onChange=${e=>{vdAddShots(e.target.files);e.target.value='';}} />
+          </label>
+          ${vdShots.length>0&&html`
+            <div class="vd-shots">${vdShots.map((x,i)=>html`
+              <div class="vd-tw" key=${i}><img src=${x.url} alt="receipt" />
+                <button class="x" onClick=${()=>setVdShots(prev=>prev.filter((_,j)=>j!==i))}>×</button></div>`)}</div>`}
+
+          <div class="lbl" style="margin-top:16px">WHAT HAPPENED?</div>
+          <textarea placeholder="When it was voided, whether the driver already left, anything the office should mention on the call…"
+            value=${vdDraft.notes} onInput=${e=>setVdDraft(prev=>({...prev,notes:e.target.value}))}></textarea>
+
+          <button class="btn olive wide" style="margin-top:16px" disabled=${vdBusy}
+            onClick=${vdSend}>${vdBusy?(vdProg||'SENDING…'):'SEND IT TO THE OFFICE'}</button>
+          <button class="ghost" style="width:100%;margin-top:10px;padding:10px"
+            onClick=${()=>{setVdOpen(false);setErr('');}}>Never mind</button>
+        </div>`}
     <//>`;
 
   // ---- tab: backyard ----
